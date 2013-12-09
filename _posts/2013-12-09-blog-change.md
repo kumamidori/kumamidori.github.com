@@ -1,13 +1,12 @@
 ---
 layout: post
-title: "blog change"
+title: "ブログをはてなダイアリーから Github Pages に移行した"
 description: ""
-category: ""
+date: 2013-12-09 00:00:00
+category: "diary"
 tags: [diary]
 ---
 {% include JB/setup %}
-
-### ブログをはてなダイアリーから Github Pages に移行した。
 
 やっと！！！
 嬉しい〜。
