@@ -704,6 +704,9 @@ pre {
   .unit-article .unit-foot-inner {
     width: 26.25em;
   }
+  .bd {
+      margin-bottom: 2.5em;
+  }
   .unit-article .unit-foot .gotop {
     margin-top: 1.625em;
   }
