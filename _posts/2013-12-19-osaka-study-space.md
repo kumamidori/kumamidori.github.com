@@ -2,7 +2,7 @@
 layout: post
 title: "大阪の勉強会スペース"
 description: ""
-date: 2013-12-09 00:00:00
+date: 2013-12-19 00:00:00
 category: "diary"
 tags: [diary]
 ---
