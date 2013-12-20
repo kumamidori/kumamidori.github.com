@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "大阪の勉強会スペース"
+title: "大阪でIT勉強会ができる会議室"
 description: ""
 date: 2013-12-19 00:00:00
 category: "diary"
