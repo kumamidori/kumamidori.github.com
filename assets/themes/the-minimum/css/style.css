@@ -281,7 +281,7 @@ pre {
   margin-top: 0;
 }
 .unit-article a:link {
-  color: #99cc99;
+  color: green;
   border-bottom: 1px dotted #99cc99;
 }
 .unit-article a:visited {
@@ -293,18 +293,22 @@ pre {
   border-bottom: 1px dotted #bbddbb;
 }
 .unit-article blockquote {
-  border-left: 1em solid rgba(21, 25, 25, 0.8);
+  border-left: 0.5em solid #555;
   padding-left: 1em;
 }
 .unit-article blockquote p {
   margin-left: 0;
   margin-right: 0;
+  color: #555;
 }
 .unit-article ul, .unit-article ol, .unit-article dl {
   padding-left: 0;
 }
 .unit-article ul {
   list-style: square;
+}
+.unit-article ul li {
+    padding-bottom: 0.5em;
 }
 .unit-article ol {
   list-style: decimal;
