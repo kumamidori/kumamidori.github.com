@@ -76,9 +76,9 @@ h3, .h3 {
 }
 h4, .h4 {
   font-size: 20px;
-  line-height: 26px;
-  margin-top: 26px;
-  margin-bottom: 26px;
+  line-height: 30px;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 p,
 ul,
@@ -281,12 +281,15 @@ pre {
   margin-top: 0;
 }
 .unit-article a:link {
+  color: #99cc99;
   border-bottom: 1px dotted #99cc99;
 }
 .unit-article a:visited {
+  color: green;
   border-bottom: 1px dotted #77bb77;
 }
 .unit-article a:hover {
+  color: #77bb77;
   border-bottom: 1px dotted #bbddbb;
 }
 .unit-article blockquote {
