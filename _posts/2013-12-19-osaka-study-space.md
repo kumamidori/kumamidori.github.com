@@ -12,19 +12,19 @@ tags: [diary]
 
 条件：会議室スペースを希望（他の人の会話が聞こえてこない方が良い）。プロジェクターあると良い。
 
-#### サイバーエージェント大阪オフィスセミナールーム
+#### サイバーエージェント大阪オフィス、セミナールーム
 
-- 無料。プロジェクタも無料。
+- 大部屋。無料。プロジェクタも無料。
 <a href="http://caosaka.github.io/atnd.html">http://caosaka.github.io/atnd.html</a>
 
-#### THE COMMON PLACE
+#### コワーキングスペース往来、レンタルスペース
 
-- 10名キャパだと1時間あたり2000円かかる・・・>< けど、その分素敵な感じみたい。電話で聞いたところ、プロジェクタレンタルは料金に含まれているとのこと。
-<a href="http://thecommonplace.the-place.jp/">http://thecommonplace.the-place.jp/</a>
+<a href="http://ourai.jimdo.com/%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E5%88%A9%E7%94%A8/"
+target="_blank">http://ourai.jimdo.com/%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E5%88%A9%E7%94%A8/</a>
 
 ### 産創館
 
-- けっこう前から予約しないとダメらしい。
+- 小部屋もあり。けっこう前から予約しないとダメらしい。
 <a href="http://shisetsu.sansokan.jp/">http://shisetsu.sansokan.jp/</a>
 
 ### 靭テニスセンター地下
@@ -36,3 +36,4 @@ tags: [diary]
 - オオサカンスペース(魅力的だけど、会議室ではない。オープンスペースでも良い人ならOK。)
 - 公共の区民センター(安いしプロジェクタある、けど遠い)
 - 扇町メビック(プロジェクタある、けど高い)
+- THE COMMON PLACE 大阪（10名キャパだと1時間あたり1人2000円以上かかる。プロジェクタレンタルは料金に含まれる）。
