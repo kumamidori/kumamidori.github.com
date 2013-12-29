@@ -1,0 +1,610 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7 ie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8 ie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9 ie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Aura for PHP をさわってみる - vol1. DI -</title>
+	<meta name="author" content="kuma_nana">
+	<link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
+	<link href="http://feeds.feedburner.com/" rel="alternate" title="Aura for PHP をさわってみる - vol1. DI -" type="application/atom+xml">
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
+</head>
+<body>
+
+<div id="page" class="hentry">
+	<header class="the-header">
+		<div class="unit-head">
+			<div class="unit-inner unit-head-inner">
+				<p class="logo"><a href="/">kumamidori blog</a></p>
+				<nav class="nav-global">
+					<ul>
+						<li class="archive"><a href="/archive.html">archive</a></li>
+						<li class="page"><a href="/pages.html">pages</a></li>
+						<li class="category"><a href="/categories.html">categories</a></li>
+						<li class="tag"><a href="/tags.html">tags</a></li>
+					</ul>
+				</nav>
+			</div><!-- unit-inner -->
+		</div><!-- unit-head -->
+	</header>
+	<div class="body" role="main">
+		<div class="unit-body">
+			<div class="unit-inner unit-body-inner">
+				<div class="entry-content">
+					
+<article class="unit-article layout-post">
+	<div class="unit-inner unit-article-inner">
+		<div class="content">
+			<header>
+				<div class="unit-head">
+					<div class="unit-inner unit-head-inner">
+						<h1 class="h2 entry-title">Aura for PHP をさわってみる - vol1. DI -</h1>
+					</div><!-- unit-inner -->
+				</div><!-- unit-head -->
+			</header>
+
+			<div class="bd">
+				<div class="entry-content">
+                    <div class="meta">
+                        <p class="date-publish">
+                            <date class="date-pub" title="2013-12-23T00:00:00Z" datetime="2013-12-23T00:00:00Z" pubdate>
+                                <span>2013-12-23</span>
+                            </date>
+                        </p>
+                    </div><!-- meta -->
+					
+<p>Aura はどういうフレームワークか？については、<a href="2013-12-22-auraphp-kansai-php-study" target="_blank">こちら</a>にすでに書きました。
+今日は、サンプルコードを書いてみて、DIの初歩的なところを理解するところまでです。</p>
+
+<h3 id="di">DIについて、予備知識</h3>
+
+<p>下記を読む。</p>
+
+<ul>
+  <li><a href="http://kakutani.com/trans/fowler/injection.html" target="_blank">Inversion of Control コンテナと Dependency Injection パターン</a></li>
+</ul>
+
+<p>すみません。正直、議論の詳細はちゃんと読めてないです。
+だんなが、「ファウラーは難しいよ、最初に考えすぎて何も完成しないのは良くない」って言ってるので、今日は先に進みます。</p>
+
+<h3 id="section">これから作ろうとしているサンプルコードの仕様</h3>
+
+<h4 id="section-1">海上輸送の予約アプリケーション</h4>
+
+<ul>
+  <li>貨物船には積載量（キャパシティ）がある</li>
+  <li>[基本機能] 輸送詳細ページ：船に載せる貨物のCRUD</li>
+  <li>[基本機能] 輸送詳細ページ：貨物の追加時に、船のキャパシティと付きあわせて、輸送予約の可否を判定</li>
+</ul>
+
+<p>なのだけど、今日は単に一覧を表示するところまでです。</p>
+
+<h3 id="section-2">作ったサンプルコード置き場はこちら！</h3>
+
+<p><a href="https://github.com/kumamidori/HelloAura" target="_blank">https://github.com/kumamidori/HelloAura</a></p>
+
+<h3 id="section-3">パッケージ構成について</h3>
+
+<p>Auraではすべてのコードは「パッケージ」として分類されます。「Library First, Framework Second」とうたわれているように、
+機能 = 独立パッケージなわけです。</p>
+
+<p><a href="http://auraphp.com/manuals/v1/ja/package-organization/">http://auraphp.com/manuals/v1/ja/package-organization/</a></p>
+
+<h3 id="section-4">まずは初期スケルトン作成</h3>
+
+<p>以下、プロジェクトパス{$PROJECT_PATH} = ~/HelloAura とした場合。</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"> <a href="#n1" name="n1">1</a></span># まずは下準備...
+<span class="line-numbers"> <a href="#n2" name="n2">2</a></span>
+<span class="line-numbers"> <a href="#n3" name="n3">3</a></span># プロジェクトスケルトン作成
+<span class="line-numbers"> <a href="#n4" name="n4">4</a></span>% composer create-project aura/system ~/HelloAura
+<span class="line-numbers"> <a href="#n5" name="n5">5</a></span>% cd ~/HelloAura
+<span class="line-numbers"> <a href="#n6" name="n6">6</a></span>
+<span class="line-numbers"> <a href="#n7" name="n7">7</a></span># ビルトインサーバ起動でHelloWorld が出ることを確認
+<span class="line-numbers"> <a href="#n8" name="n8">8</a></span>% php package/Aura.Framework/cli/server
+<span class="line-numbers"> <a href="#n9" name="n9">9</a></span>
+<span class="line-numbers"><strong><a href="#n10" name="n10">10</a></strong></span># テストが通ることを確認
+<span class="line-numbers"><a href="#n11" name="n11">11</a></span>% cd tests
+<span class="line-numbers"><a href="#n12" name="n12">12</a></span>% phpunit
+</pre></div>
+</div>
+</div>
+
+<h3 id="section-5">パッケージを作る</h3>
+
+<ul>
+  <li>自分が作るアプリケーションコードも、なんでも「パッケージ」にすべきなの？</li>
+</ul>
+
+<p>公式のデモコードを見ると、パッケージ化されていない「include」というフォルダがプロジェクトの直下にあるから、
+別に全部パッケージ化しなくても良いのかも・・・。</p>
+
+<p>→　でも、パッケージで作る方が、詰まることなくマニュアル通りに進めそうなので、今回はそうする！</p>
+
+<ul>
+  <li>ベンダー名： <code>Kumamidori</code></li>
+  <li>アプリケーション名：<code>Transportation</code>（輸送アプリケーションなので）</li>
+</ul>
+
+<p>で作る。</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>% cd ~/HelloAura
+<span class="line-numbers"><a href="#n2" name="n2">2</a></span>% mkdir -p package/Kumamidori.Transportation/src/Kumamidori/Transportation/Web/Home/views
+<span class="line-numbers"><a href="#n3" name="n3">3</a></span>% mkdir package/Kumamidori.Transportation/config
+</pre></div>
+</div>
+</div>
+
+<h3 id="section-6">作ったパッケージをロード</h3>
+
+<p><code>HelloAura/config/_packages</code>に<code>Kumamidori.Transportation</code>の一行を追記。</p>
+
+<h3 id="section-7">パッケージの初期設定ファイル</h3>
+
+<p><code>HelloAura/package/Kumamidori.Transportation/config/default.php</code></p>
+
+<p>に、アプリケーションコードのパッケージに対するオートローダを追加、ルーティング指定も書いた。</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"> <a href="#n1" name="n1">1</a></span><span style="font-weight:bold;color:#666">&lt;?php</span>
+<span class="line-numbers"> <a href="#n2" name="n2">2</a></span><span style="color:#777">// add the package to the autoloader</span>
+<span class="line-numbers"> <a href="#n3" name="n3">3</a></span><span style="color:#963">$loader</span>-&gt;add(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Kumamidori</span><span style="color:#D20">\T</span><span style="color:#D20">ransportation</span><span style="color:#b0b">\\</span><span style="color:#710">'</span></span>, <span style="color:#369;font-weight:bold">dirname</span>(<span style="color:#069">__DIR__</span>) . <span style="color:#069">DIRECTORY_SEPARATOR</span> . <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">src</span><span style="color:#710">'</span></span>);
+<span class="line-numbers"> <a href="#n4" name="n4">4</a></span>
+<span class="line-numbers"> <a href="#n5" name="n5">5</a></span><span style="color:#777">// add a route to the page and action</span>
+<span class="line-numbers"> <a href="#n6" name="n6">6</a></span><span style="color:#963">$di</span>-&gt;get(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">router_map</span><span style="color:#710">'</span></span>)-&gt;add(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">home</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">/</span><span style="color:#710">'</span></span>, [
+<span class="line-numbers"> <a href="#n7" name="n7">7</a></span>    <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">values</span><span style="color:#710">'</span></span> =&gt; [
+<span class="line-numbers"> <a href="#n8" name="n8">8</a></span>        <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">controller</span><span style="color:#710">'</span></span> =&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">home</span><span style="color:#710">'</span></span>,
+<span class="line-numbers"> <a href="#n9" name="n9">9</a></span>        <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">action</span><span style="color:#710">'</span></span> =&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">index</span><span style="color:#710">'</span></span>,
+<span class="line-numbers"><strong><a href="#n10" name="n10">10</a></strong></span>    ],
+<span class="line-numbers"><a href="#n11" name="n11">11</a></span>]);
+<span class="line-numbers"><a href="#n12" name="n12">12</a></span>
+<span class="line-numbers"><a href="#n13" name="n13">13</a></span><span style="color:#777">// map the 'greet' controller value to a page controller class</span>
+<span class="line-numbers"><a href="#n14" name="n14">14</a></span><span style="color:#963">$di</span>-&gt;params[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Aura</span><span style="color:#D20">\F</span><span style="color:#D20">ramework</span><span style="color:#D20">\W</span><span style="color:#D20">eb</span><span style="color:#D20">\C</span><span style="color:#D20">ontroller</span><span style="color:#D20">\F</span><span style="color:#D20">actory</span><span style="color:#710">'</span></span>][<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">map</span><span style="color:#710">'</span></span>][<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">home</span><span style="color:#710">'</span></span>] = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Kumamidori</span><span style="color:#D20">\T</span><span style="color:#D20">ransportation</span><span style="color:#D20">\W</span><span style="color:#D20">eb</span><span style="color:#D20">\H</span><span style="color:#D20">ome</span><span style="color:#D20">\H</span><span style="color:#D20">omePage</span><span style="color:#710">'</span></span>;
+</pre></div>
+</div>
+</div>
+
+<p>これでビルトインサーバを起動すれば、とりあえずホームが表示される。OK。</p>
+
+<ul>
+  <li>疑問：この、↑ <code>$loader</code> と <code>$di</code> は、どこから来たの？</li>
+</ul>
+
+<p><code>/package/Aura.Framework/src/Aura/Framework/Bootstrap/Factory.php</code>
+に該当コードがあった。</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"> <a href="#n1" name="n1">1</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">prep</span>(<span style="color:#963">$mode</span> = <span style="color:#069">null</span>, <span style="color:#963">$silent_loader</span> = <span style="color:#069">false</span>)
+<span class="line-numbers"> <a href="#n2" name="n2">2</a></span>    {
+<span class="line-numbers"> <a href="#n3" name="n3">3</a></span>        <span style="color:#777">// ・・・略</span>
+<span class="line-numbers"> <a href="#n4" name="n4">4</a></span>        <span style="color:#777">// create the autoloader</span>
+<span class="line-numbers"> <a href="#n5" name="n5">5</a></span>        <span style="color:#963">$system</span> = <span style="color:#080;font-weight:bold">new</span> <span style="color:#369;font-weight:bold">System</span>(<span style="color:#963">$this</span>-&gt;root);
+<span class="line-numbers"> <a href="#n6" name="n6">6</a></span>        <span style="color:#777">// ・・・略</span>
+<span class="line-numbers"> <a href="#n7" name="n7">7</a></span>        <span style="color:#963">$loader</span> = <span style="color:#080;font-weight:bold">new</span> <span style="color:#036;font-weight:bold">Loader</span>;
+<span class="line-numbers"> <a href="#n8" name="n8">8</a></span>        <span style="color:#963">$loader</span>-&gt;prep(<span style="color:#963">$system</span>);
+<span class="line-numbers"> <a href="#n9" name="n9">9</a></span>        <span style="color:#080;font-weight:bold">if</span> (<span style="color:#963">$silent_loader</span>) {
+<span class="line-numbers"><strong><a href="#n10" name="n10">10</a></strong></span>            <span style="color:#963">$loader</span>-&gt;setMode(<span style="color:#963">$loader</span>::<span style="color:#036;font-weight:bold">MODE_SILENT</span>);
+<span class="line-numbers"><a href="#n11" name="n11">11</a></span>        }
+<span class="line-numbers"><a href="#n12" name="n12">12</a></span>        <span style="color:#963">$loader</span>-&gt;register();
+<span class="line-numbers"><a href="#n13" name="n13">13</a></span>
+<span class="line-numbers"><a href="#n14" name="n14">14</a></span>        <span style="color:#777">// create the DI container</span>
+<span class="line-numbers"><a href="#n15" name="n15">15</a></span>        <span style="color:#963">$di</span> = <span style="color:#080;font-weight:bold">new</span> <span style="color:#036;font-weight:bold">Container</span>(<span style="color:#080;font-weight:bold">new</span> <span style="color:#036;font-weight:bold">Forge</span>(<span style="color:#080;font-weight:bold">new</span> <span style="color:#036;font-weight:bold">Config</span>));
+<span class="line-numbers"><a href="#n16" name="n16">16</a></span>
+<span class="line-numbers"><a href="#n17" name="n17">17</a></span>        <span style="color:#777">// ・・・略</span>
+<span class="line-numbers"><a href="#n18" name="n18">18</a></span>
+<span class="line-numbers"><a href="#n19" name="n19">19</a></span>        <span style="color:#080;font-weight:bold">if</span> (! <span style="color:#963">$mode</span>) {
+<span class="line-numbers"><strong><a href="#n20" name="n20">20</a></strong></span>            <span style="color:#963">$file</span> = <span style="color:#963">$system</span>-&gt;getConfigPath(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">_mode</span><span style="color:#710">'</span></span>);
+<span class="line-numbers"><a href="#n21" name="n21">21</a></span>            <span style="color:#080;font-weight:bold">if</span> (<span style="color:#369;font-weight:bold">is_readable</span>(<span style="color:#963">$file</span>)) {
+<span class="line-numbers"><a href="#n22" name="n22">22</a></span>                <span style="color:#963">$mode</span> = <span style="color:#369;font-weight:bold">trim</span>(<span style="color:#369;font-weight:bold">file_get_contents</span>(<span style="color:#963">$file</span>));
+<span class="line-numbers"><a href="#n23" name="n23">23</a></span>            } <span style="color:#080;font-weight:bold">else</span> {
+<span class="line-numbers"><a href="#n24" name="n24">24</a></span>                <span style="color:#963">$mode</span> = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">default</span><span style="color:#710">'</span></span>;  <span style="color:#777">// ＜※ここでconfig/default が出てくる</span>
+<span class="line-numbers"><a href="#n25" name="n25">25</a></span>            }
+<span class="line-numbers"><a href="#n26" name="n26">26</a></span>        }
+<span class="line-numbers"><a href="#n27" name="n27">27</a></span>
+<span class="line-numbers"><a href="#n28" name="n28">28</a></span>        <span style="color:#963">$read</span> = <span style="color:#080;font-weight:bold">function</span> (<span style="color:#963">$file</span>) <span style="color:#080;font-weight:bold">use</span> (<span style="color:#963">$di</span>, <span style="color:#963">$system</span>, <span style="color:#963">$loader</span>) {
+<span class="line-numbers"><a href="#n29" name="n29">29</a></span>            <span style="color:#369;font-weight:bold">require</span> <span style="color:#963">$file</span>;
+<span class="line-numbers"><strong><a href="#n30" name="n30">30</a></strong></span>        };
+<span class="line-numbers"><a href="#n31" name="n31">31</a></span>
+<span class="line-numbers"><a href="#n32" name="n32">32</a></span>        <span style="color:#963">$cache</span> = <span style="color:#963">$this</span>-&gt;readCacheConfig(<span style="color:#963">$system</span>, <span style="color:#963">$read</span>, <span style="color:#963">$mode</span>);
+<span class="line-numbers"><a href="#n33" name="n33">33</a></span>        <span style="color:#080;font-weight:bold">if</span> (! <span style="color:#963">$cache</span>) {
+<span class="line-numbers"><a href="#n34" name="n34">34</a></span>            <span style="color:#963">$this</span>-&gt;readPackageConfig(<span style="color:#963">$system</span>, <span style="color:#963">$read</span>, <span style="color:#963">$mode</span>);
+<span class="line-numbers"><a href="#n35" name="n35">35</a></span>        }
+<span class="line-numbers"><a href="#n36" name="n36">36</a></span>
+<span class="line-numbers"><a href="#n37" name="n37">37</a></span>        <span style="color:#963">$this</span>-&gt;readSystemConfig(<span style="color:#963">$system</span>, <span style="color:#963">$read</span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">default</span><span style="color:#710">'</span></span>);
+<span class="line-numbers"><a href="#n38" name="n38">38</a></span>        <span style="color:#080;font-weight:bold">if</span> (<span style="color:#963">$mode</span> != <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">default</span><span style="color:#710">'</span></span>) {
+<span class="line-numbers"><a href="#n39" name="n39">39</a></span>            <span style="color:#963">$this</span>-&gt;readSystemConfig(<span style="color:#963">$system</span>, <span style="color:#963">$read</span>, <span style="color:#963">$mode</span>);
+<span class="line-numbers"><strong><a href="#n40" name="n40">40</a></strong></span>        }
+<span class="line-numbers"><a href="#n41" name="n41">41</a></span>
+<span class="line-numbers"><a href="#n42" name="n42">42</a></span>        <span style="color:#963">$di</span>-&gt;lock();
+<span class="line-numbers"><a href="#n43" name="n43">43</a></span>
+<span class="line-numbers"><a href="#n44" name="n44">44</a></span>        <span style="color:#080;font-weight:bold">return</span> <span style="color:#963">$di</span>;
+<span class="line-numbers"><a href="#n45" name="n45">45</a></span>    }
+</pre></div>
+</div>
+</div>
+
+<ul>
+  <li>疑問：<code>$di</code> で使えるメソッドは何なの？</li>
+</ul>
+
+<p><code>HelloAura/package/Aura.Di/src/Aura/Di/Container.php</code> に定義があった</p>
+
+<p>(その1) メソッド定義</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"> <a href="#n1" name="n1">1</a></span>    <span style="color:#777">/**</span>
+<span class="line-numbers"> <a href="#n2" name="n2">2</a></span><span style="color:#777">     * Sets a service object by name.</span>
+<span class="line-numbers"> <a href="#n3" name="n3">3</a></span><span style="color:#777">     */</span>
+<span class="line-numbers"> <a href="#n4" name="n4">4</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">set</span>(<span style="color:#963">$key</span>, <span style="color:#963">$val</span>);
+<span class="line-numbers"> <a href="#n5" name="n5">5</a></span>
+<span class="line-numbers"> <a href="#n6" name="n6">6</a></span>    <span style="color:#777">/**</span>
+<span class="line-numbers"> <a href="#n7" name="n7">7</a></span><span style="color:#777">     * Gets a service object by key, lazy-loading it as needed.</span>
+<span class="line-numbers"> <a href="#n8" name="n8">8</a></span><span style="color:#777">     */</span>
+<span class="line-numbers"> <a href="#n9" name="n9">9</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">get</span>(<span style="color:#963">$key</span>);
+<span class="line-numbers"><strong><a href="#n10" name="n10">10</a></strong></span>
+<span class="line-numbers"><a href="#n11" name="n11">11</a></span>    <span style="color:#777">/**</span>
+<span class="line-numbers"><a href="#n12" name="n12">12</a></span><span style="color:#777">     * Returns a Lazy that gets a service.</span>
+<span class="line-numbers"><a href="#n13" name="n13">13</a></span><span style="color:#777">     *</span>
+<span class="line-numbers"><a href="#n14" name="n14">14</a></span><span style="color:#777">     * @param string $key The service name; it does not need to exist yet.</span>
+<span class="line-numbers"><a href="#n15" name="n15">15</a></span><span style="color:#777">     * @return Lazy A lazy-load object that gets the named service.</span>
+<span class="line-numbers"><a href="#n16" name="n16">16</a></span><span style="color:#777">     */</span>
+<span class="line-numbers"><a href="#n17" name="n17">17</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">lazyGet</span>(<span style="color:#963">$key</span>);
+<span class="line-numbers"><a href="#n18" name="n18">18</a></span>
+<span class="line-numbers"><a href="#n19" name="n19">19</a></span>    <span style="color:#777">/**</span>
+<span class="line-numbers"><strong><a href="#n20" name="n20">20</a></strong></span><span style="color:#777">     * Returns a new instance of the specified class, optionally</span>
+<span class="line-numbers"><a href="#n21" name="n21">21</a></span><span style="color:#777">     * with additional override parameters.</span>
+<span class="line-numbers"><a href="#n22" name="n22">22</a></span><span style="color:#777">     */</span>
+<span class="line-numbers"><a href="#n23" name="n23">23</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">newInstance</span>(<span style="color:#963">$class</span>, <span style="color:#369;font-weight:bold">array</span> <span style="color:#963">$params</span> = [], <span style="color:#369;font-weight:bold">array</span> <span style="color:#963">$setters</span> = []);
+<span class="line-numbers"><a href="#n24" name="n24">24</a></span>
+<span class="line-numbers"><a href="#n25" name="n25">25</a></span>    <span style="color:#777">/**</span>
+<span class="line-numbers"><a href="#n26" name="n26">26</a></span><span style="color:#777">     * Returns a Lazy that creates a new instance.</span>
+<span class="line-numbers"><a href="#n27" name="n27">27</a></span><span style="color:#777">     */</span>
+<span class="line-numbers"><a href="#n28" name="n28">28</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">lazyNew</span>(<span style="color:#963">$class</span>, <span style="color:#369;font-weight:bold">array</span> <span style="color:#963">$params</span> = [], <span style="color:#369;font-weight:bold">array</span> <span style="color:#963">$setters</span> = []);
+<span class="line-numbers"><a href="#n29" name="n29">29</a></span>
+<span class="line-numbers"><strong><a href="#n30" name="n30">30</a></strong></span>    <span style="color:#777">/**</span>
+<span class="line-numbers"><a href="#n31" name="n31">31</a></span><span style="color:#777">     * Returns a Factory that creates an object over and over again (as vs</span>
+<span class="line-numbers"><a href="#n32" name="n32">32</a></span><span style="color:#777">     * creating it one time like the lazyNew() or newInstance() methods).</span>
+<span class="line-numbers"><a href="#n33" name="n33">33</a></span><span style="color:#777">     */</span>
+<span class="line-numbers"><a href="#n34" name="n34">34</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">newFactory</span>(<span style="color:#963">$class</span>, <span style="color:#369;font-weight:bold">array</span> <span style="color:#963">$params</span> = [], <span style="color:#369;font-weight:bold">array</span> <span style="color:#963">$setters</span> = [])
+<span class="line-numbers"><a href="#n35" name="n35">35</a></span>    {
+<span class="line-numbers"><a href="#n36" name="n36">36</a></span>        <span style="color:#080;font-weight:bold">return</span> <span style="color:#080;font-weight:bold">new</span> <span style="color:#036;font-weight:bold">Factory</span>(<span style="color:#963">$this</span>-&gt;forge, <span style="color:#963">$class</span>, <span style="color:#963">$params</span>, <span style="color:#963">$setters</span>);
+<span class="line-numbers"><a href="#n37" name="n37">37</a></span>    }
+</pre></div>
+</div>
+</div>
+
+<p>(その2) マジックメソッドでパラメータとセッター定義</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">__get</span>(<span style="color:#963">$key</span>)
+<span class="line-numbers"><a href="#n2" name="n2">2</a></span>    {
+<span class="line-numbers"><a href="#n3" name="n3">3</a></span>        <span style="color:#777">// ・・・略</span>
+<span class="line-numbers"><a href="#n4" name="n4">4</a></span>        <span style="color:#080;font-weight:bold">if</span> (<span style="color:#963">$key</span> == <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">params</span><span style="color:#710">'</span></span> || <span style="color:#963">$key</span> == <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">setter</span><span style="color:#710">'</span></span>) {
+<span class="line-numbers"><a href="#n5" name="n5">5</a></span>            <span style="color:#080;font-weight:bold">return</span> <span style="color:#963">$this</span>-&gt;<span style="color:#963">$key</span>;
+<span class="line-numbers"><a href="#n6" name="n6">6</a></span>        }
+<span class="line-numbers"><a href="#n7" name="n7">7</a></span>        <span style="color:#777">// ・・・略</span>
+<span class="line-numbers"><a href="#n8" name="n8">8</a></span>    }
+</pre></div>
+</div>
+</div>
+
+<h3 id="dbdi">DB接続に、DIの「コンストラクトインジェクション」を使う話</h3>
+
+<p><a href="http://auraphp.com/manuals/v1/ja/di/" target="_blank">Aura DI -ディペンデンシーインジェクション</a>
+を読む。</p>
+
+<ul>
+  <li>サンプルコードのクラス設計：</li>
+</ul>
+
+<pre><code>Kumamidori\Transportation\
+  \Database: DBクラス（DB接続そのもの）
+  \Model\AbstractRecord: DBアクセスするモデル系のスーパークラス（DB接続を持っていて利用する）
+</code></pre>
+
+<p>にしてみた。DB名は「transportation」。</p>
+
+<h4 id="section-8">サービスの設定</h4>
+
+<ul>
+  <li>データベース接続を返すサービスの定義</li>
+</ul>
+
+<p><code>Kumamidori\Transportation\Database</code></p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"> <a href="#n1" name="n1">1</a></span><span style="font-weight:bold;color:#666">&lt;?php</span>
+<span class="line-numbers"> <a href="#n2" name="n2">2</a></span><span style="color:#777">// ・・・略</span>
+<span class="line-numbers"> <a href="#n3" name="n3">3</a></span><span style="color:#080;font-weight:bold">class</span> <span style="color:#B06;font-weight:bold">Database</span>
+<span class="line-numbers"> <a href="#n4" name="n4">4</a></span>{
+<span class="line-numbers"> <a href="#n5" name="n5">5</a></span>    <span style="color:#080;font-weight:bold">private</span> <span style="color:#963">$connection</span>;
+<span class="line-numbers"> <a href="#n6" name="n6">6</a></span>
+<span class="line-numbers"> <a href="#n7" name="n7">7</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">__construct</span>(<span style="color:#963">$hostname</span>, <span style="color:#963">$dbname</span>, <span style="color:#963">$username</span>, <span style="color:#963">$password</span>)
+<span class="line-numbers"> <a href="#n8" name="n8">8</a></span>    {
+<span class="line-numbers"> <a href="#n9" name="n9">9</a></span>        <span style="color:#963">$connection_factory</span> = <span style="color:#080;font-weight:bold">new</span> <span style="color:#036;font-weight:bold">ConnectionFactory</span>;
+<span class="line-numbers"><strong><a href="#n10" name="n10">10</a></strong></span>        <span style="color:#963">$dsn</span> = <span style="color:#369;font-weight:bold">sprintf</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mysql:host=%s;dbname=%s</span><span style="color:#710">'</span></span>, <span style="color:#963">$hostname</span>, <span style="color:#963">$dbname</span>);
+<span class="line-numbers"><a href="#n11" name="n11">11</a></span>        <span style="color:#963">$this</span>-&gt;connection = <span style="color:#963">$connection_factory</span>-&gt;newInstance(
+<span class="line-numbers"><a href="#n12" name="n12">12</a></span>            <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mysql</span><span style="color:#710">'</span></span>,
+<span class="line-numbers"><a href="#n13" name="n13">13</a></span>            <span style="color:#963">$dsn</span>,
+<span class="line-numbers"><a href="#n14" name="n14">14</a></span>            <span style="color:#963">$username</span>,
+<span class="line-numbers"><a href="#n15" name="n15">15</a></span>            <span style="color:#963">$password</span>
+<span class="line-numbers"><a href="#n16" name="n16">16</a></span>        );
+<span class="line-numbers"><a href="#n17" name="n17">17</a></span>    }
+<span class="line-numbers"><a href="#n18" name="n18">18</a></span>
+<span class="line-numbers"><a href="#n19" name="n19">19</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">getConnection</span>()
+<span class="line-numbers"><strong><a href="#n20" name="n20">20</a></strong></span>    {
+<span class="line-numbers"><a href="#n21" name="n21">21</a></span>        <span style="color:#080;font-weight:bold">return</span> <span style="color:#963">$this</span>-&gt;connection;
+<span class="line-numbers"><a href="#n22" name="n22">22</a></span>    }
+<span class="line-numbers"><a href="#n23" name="n23">23</a></span>}
+</pre></div>
+</div>
+</div>
+
+<ul>
+  <li>データベース接続サービスの利用側</li>
+</ul>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"> <a href="#n1" name="n1">1</a></span><span style="font-weight:bold;color:#666">&lt;?php</span>
+<span class="line-numbers"> <a href="#n2" name="n2">2</a></span><span style="color:#777">// ・・・略</span>
+<span class="line-numbers"> <a href="#n3" name="n3">3</a></span><span style="color:#080;font-weight:bold">abstract</span> <span style="color:#080;font-weight:bold">class</span> <span style="color:#B06;font-weight:bold">AbstractRecord</span> <span style="color:#080;font-weight:bold">extends</span> <span style="color:#036;font-weight:bold">AbstractModel</span>
+<span class="line-numbers"> <a href="#n4" name="n4">4</a></span>{
+<span class="line-numbers"> <a href="#n5" name="n5">5</a></span>    <span style="color:#080;font-weight:bold">protected</span> <span style="color:#963">$connection</span>;
+<span class="line-numbers"> <a href="#n6" name="n6">6</a></span>
+<span class="line-numbers"> <a href="#n7" name="n7">7</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">__construct</span>(<span style="color:#036;font-weight:bold">Database</span> <span style="color:#963">$db</span>)
+<span class="line-numbers"> <a href="#n8" name="n8">8</a></span>    {
+<span class="line-numbers"> <a href="#n9" name="n9">9</a></span>        <span style="color:#963">$this</span>-&gt;connection = <span style="color:#963">$db</span>-&gt;getConnection();
+<span class="line-numbers"><strong><a href="#n10" name="n10">10</a></strong></span>    }
+<span class="line-numbers"><a href="#n11" name="n11">11</a></span>}
+</pre></div>
+</div>
+</div>
+
+<ul>
+  <li>サービスの設定</li>
+</ul>
+
+<p><code>HelloAura/package/Kumamidori.Transportation/config/default.php</code></p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"> <a href="#n1" name="n1">1</a></span><span style="color:#777">// http://auraphp.com/manuals/v1/ja/di/</span>
+<span class="line-numbers"> <a href="#n2" name="n2">2</a></span><span style="color:#777">// 方法 5: lazyNew() メソッドのコール（クロージャを使って新しいインスタンスを返す、と同様）</span>
+<span class="line-numbers"> <a href="#n3" name="n3">3</a></span><span style="color:#777">// この１行だけで、この params がそのまま、Database クラスの __construct の引数になる。引数の順番は関係無いところがGoodですね。</span>
+<span class="line-numbers"> <a href="#n4" name="n4">4</a></span><span style="color:#963">$di</span>-&gt;params[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Kumamidori</span><span style="color:#D20">\T</span><span style="color:#D20">ransportation</span><span style="color:#D20">\D</span><span style="color:#D20">atabase</span><span style="color:#710">'</span></span>] = [
+<span class="line-numbers"> <a href="#n5" name="n5">5</a></span>    <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">hostname</span><span style="color:#710">'</span></span> =&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">localhost</span><span style="color:#710">'</span></span>,
+<span class="line-numbers"> <a href="#n6" name="n6">6</a></span>    <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">dbname</span><span style="color:#710">'</span></span> =&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">transportation</span><span style="color:#710">'</span></span>,
+<span class="line-numbers"> <a href="#n7" name="n7">7</a></span>    <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">username</span><span style="color:#710">'</span></span> =&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">root</span><span style="color:#710">'</span></span>,
+<span class="line-numbers"> <a href="#n8" name="n8">8</a></span>    <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">password</span><span style="color:#710">'</span></span> =&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>,
+<span class="line-numbers"> <a href="#n9" name="n9">9</a></span>];
+<span class="line-numbers"><strong><a href="#n10" name="n10">10</a></strong></span>
+<span class="line-numbers"><a href="#n11" name="n11">11</a></span><span style="color:#777">// default params for the AbstractRecord class</span>
+<span class="line-numbers"><a href="#n12" name="n12">12</a></span><span style="color:#777">// この１行だけで、この params がそのまま、AbstractRecord クラスの __construct の引数になる。</span>
+<span class="line-numbers"><a href="#n13" name="n13">13</a></span><span style="color:#963">$di</span>-&gt;params[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Kumamidori</span><span style="color:#D20">\T</span><span style="color:#D20">ransportation</span><span style="color:#D20">\M</span><span style="color:#D20">odel</span><span style="color:#D20">\A</span><span style="color:#D20">bstractRecord</span><span style="color:#710">'</span></span>] = [
+<span class="line-numbers"><a href="#n14" name="n14">14</a></span>    <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">db</span><span style="color:#710">'</span></span> =&gt; <span style="color:#963">$di</span>-&gt;lazyGet(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">database</span><span style="color:#710">'</span></span>),
+<span class="line-numbers"><a href="#n15" name="n15">15</a></span>];
+<span class="line-numbers"><a href="#n16" name="n16">16</a></span>
+<span class="line-numbers"><a href="#n17" name="n17">17</a></span><span style="color:#777">// define the database service</span>
+<span class="line-numbers"><a href="#n18" name="n18">18</a></span><span style="color:#963">$di</span>-&gt;set(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">database</span><span style="color:#710">'</span></span>, <span style="color:#963">$di</span>-&gt;lazyNew(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Kumamidori</span><span style="color:#D20">\T</span><span style="color:#D20">ransportation</span><span style="color:#D20">\D</span><span style="color:#D20">atabase</span><span style="color:#710">'</span></span>));
+</pre></div>
+</div>
+</div>
+
+<ul>
+  <li>
+    <p>疑問：こういう設定を書く「順番」は関係あるの？ →　無い。設定ファイルのどこかに書いてあれば正しく解決される。</p>
+  </li>
+  <li>
+    <p>疑問：ここで言う「サービス」って何？オブジェクトなの？処理なの？</p>
+  </li>
+  <li>
+    <p>→　DIコンテナで取得、設定できるモノ。
+Aura だと、$di-&gt;get()/ $di-&gt;set() で、任意のキー名を使ってアクセスされる。
+<code>$di-&gt;set('database', $di-&gt;lazyNew('Kumamidori\Transportation\Database'));</code>
+データベースサービス、具体的には、「コンテナがDatabaseオブジェクトをlazyNewする」というサービスを設定したら、
+<code>$di-&gt;lazyGet('database')</code> でそれを取得することができるようになる。
+言い換えるとなんだろう・・・「組み立てにより生成されるインスタンスが提供する動的な機能のこと」を指すのかな？・・・自信なし。</p>
+  </li>
+</ul>
+
+<h3 id="di-1">モデルオブジェクトのファクトリに、DI「セッターインジェクション」を使う</h3>
+
+<p>気力が尽きてきたので省きます。コードだけ抜粋。クロージャってPHP実務で使った記憶ほとんど無いけど、便利そう。</p>
+
+<ul>
+  <li>ファクトリの定義</li>
+</ul>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"> <a href="#n1" name="n1">1</a></span><span style="font-weight:bold;color:#666">&lt;?php</span>
+<span class="line-numbers"> <a href="#n2" name="n2">2</a></span><span style="color:#777">// 略</span>
+<span class="line-numbers"> <a href="#n3" name="n3">3</a></span><span style="color:#080;font-weight:bold">class</span> <span style="color:#B06;font-weight:bold">ModelFactory</span>
+<span class="line-numbers"> <a href="#n4" name="n4">4</a></span>{
+<span class="line-numbers"> <a href="#n5" name="n5">5</a></span>    <span style="color:#777">// a map of model names to factory closures</span>
+<span class="line-numbers"> <a href="#n6" name="n6">6</a></span>    <span style="color:#080;font-weight:bold">protected</span> <span style="color:#963">$map</span> = [];
+<span class="line-numbers"> <a href="#n7" name="n7">7</a></span>
+<span class="line-numbers"> <a href="#n8" name="n8">8</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">__construct</span>(<span style="color:#963">$map</span> = [])
+<span class="line-numbers"> <a href="#n9" name="n9">9</a></span>    {
+<span class="line-numbers"><strong><a href="#n10" name="n10">10</a></strong></span>        <span style="color:#963">$this</span>-&gt;map = <span style="color:#963">$map</span>;
+<span class="line-numbers"><a href="#n11" name="n11">11</a></span>    }
+<span class="line-numbers"><a href="#n12" name="n12">12</a></span>
+<span class="line-numbers"><a href="#n13" name="n13">13</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">newInstance</span>(<span style="color:#963">$model_name</span>)
+<span class="line-numbers"><a href="#n14" name="n14">14</a></span>    {
+<span class="line-numbers"><a href="#n15" name="n15">15</a></span>        <span style="color:#963">$factory</span> = <span style="color:#963">$this</span>-&gt;map[<span style="color:#963">$model_name</span>];
+<span class="line-numbers"><a href="#n16" name="n16">16</a></span>        <span style="color:#963">$model</span> = <span style="color:#963">$factory</span>();
+<span class="line-numbers"><a href="#n17" name="n17">17</a></span>        <span style="color:#080;font-weight:bold">return</span> <span style="color:#963">$model</span>;
+<span class="line-numbers"><a href="#n18" name="n18">18</a></span>    }
+<span class="line-numbers"><a href="#n19" name="n19">19</a></span>}
+</pre></div>
+</div>
+</div>
+
+<ul>
+  <li>ファクトリを利用する（セッターインジェクトされる）側</li>
+</ul>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"> <a href="#n1" name="n1">1</a></span><span style="font-weight:bold;color:#666">&lt;?php</span>
+<span class="line-numbers"> <a href="#n2" name="n2">2</a></span><span style="color:#777">//・・・略</span>
+<span class="line-numbers"> <a href="#n3" name="n3">3</a></span><span style="color:#080;font-weight:bold">use</span> <span style="color:#036;font-weight:bold">Kumamidori</span>\<span style="color:#036;font-weight:bold">Transportation</span>\<span style="color:#036;font-weight:bold">Model</span>\<span style="color:#036;font-weight:bold">ModelFactory</span>;
+<span class="line-numbers"> <a href="#n4" name="n4">4</a></span>
+<span class="line-numbers"> <a href="#n5" name="n5">5</a></span><span style="color:#080;font-weight:bold">class</span> <span style="color:#B06;font-weight:bold">ApplicationPage</span> <span style="color:#080;font-weight:bold">extends</span> <span style="color:#036;font-weight:bold">AbstractPage</span>
+<span class="line-numbers"> <a href="#n6" name="n6">6</a></span>{
+<span class="line-numbers"> <a href="#n7" name="n7">7</a></span>    <span style="color:#080;font-weight:bold">protected</span> <span style="color:#963">$model_factory</span>;
+<span class="line-numbers"> <a href="#n8" name="n8">8</a></span>
+<span class="line-numbers"> <a href="#n9" name="n9">9</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">setModelFactory</span>(<span style="color:#036;font-weight:bold">ModelFactory</span> <span style="color:#963">$model_factory</span>)
+<span class="line-numbers"><strong><a href="#n10" name="n10">10</a></strong></span>    {
+<span class="line-numbers"><a href="#n11" name="n11">11</a></span>        <span style="color:#963">$this</span>-&gt;model_factory = <span style="color:#963">$model_factory</span>;
+<span class="line-numbers"><a href="#n12" name="n12">12</a></span>    }
+<span class="line-numbers"><a href="#n13" name="n13">13</a></span>}
+</pre></div>
+</div>
+</div>
+
+<ul>
+  <li>設定</li>
+</ul>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"> <a href="#n1" name="n1">1</a></span><span style="color:#777">// default params for the model factory</span>
+<span class="line-numbers"> <a href="#n2" name="n2">2</a></span><span style="color:#963">$di</span>-&gt;params[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Kumamidori</span><span style="color:#D20">\T</span><span style="color:#D20">ransportation</span><span style="color:#D20">\M</span><span style="color:#D20">odel</span><span style="color:#D20">\M</span><span style="color:#D20">odelFactory</span><span style="color:#710">'</span></span>] = [
+<span class="line-numbers"> <a href="#n3" name="n3">3</a></span>    <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">map</span><span style="color:#710">'</span></span> =&gt; [
+<span class="line-numbers"> <a href="#n4" name="n4">4</a></span>        <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">transportation</span><span style="color:#710">'</span></span> =&gt; <span style="color:#963">$di</span>-&gt;newFactory(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Kumamidori</span><span style="color:#D20">\T</span><span style="color:#D20">ransportation</span><span style="color:#D20">\M</span><span style="color:#D20">odel</span><span style="color:#D20">\T</span><span style="color:#D20">ransportation</span><span style="color:#D20">\T</span><span style="color:#D20">ransportationRecord</span><span style="color:#710">'</span></span>),
+<span class="line-numbers"> <a href="#n5" name="n5">5</a></span>    ]
+<span class="line-numbers"> <a href="#n6" name="n6">6</a></span>];
+<span class="line-numbers"> <a href="#n7" name="n7">7</a></span><span style="color:#777">// define the model factory service</span>
+<span class="line-numbers"> <a href="#n8" name="n8">8</a></span><span style="color:#963">$di</span>-&gt;set(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">model_factory</span><span style="color:#710">'</span></span>, <span style="color:#963">$di</span>-&gt;lazyNew(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Kumamidori</span><span style="color:#D20">\T</span><span style="color:#D20">ransportation</span><span style="color:#D20">\M</span><span style="color:#D20">odel</span><span style="color:#D20">\M</span><span style="color:#D20">odelFactory</span><span style="color:#710">'</span></span>));
+<span class="line-numbers"> <a href="#n9" name="n9">9</a></span><span style="color:#777">// after construction, the Forge will call ApplicationPage::setModelFactory()</span>
+<span class="line-numbers"><strong><a href="#n10" name="n10">10</a></strong></span><span style="color:#777">// and inject the 'model_factory' service object</span>
+<span class="line-numbers"><a href="#n11" name="n11">11</a></span><span style="color:#963">$di</span>-&gt;setter[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Kumamidori</span><span style="color:#D20">\T</span><span style="color:#D20">ransportation</span><span style="color:#D20">\W</span><span style="color:#D20">eb</span><span style="color:#D20">\A</span><span style="color:#D20">pplicationPage</span><span style="color:#710">'</span></span>][<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">setModelFactory</span><span style="color:#710">'</span></span>] = <span style="color:#963">$di</span>-&gt;lazyGet(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">model_factory</span><span style="color:#710">'</span></span>);
+</pre></div>
+</div>
+</div>
+
+<h3 id="section-9">コントローラ</h3>
+
+<p><code>HelloAura/src/Kumamidori/Transportation/Web/Home/HomePage.php</code></p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"> <a href="#n1" name="n1">1</a></span><span style="font-weight:bold;color:#666">&lt;?php</span>
+<span class="line-numbers"> <a href="#n2" name="n2">2</a></span><span style="color:#777">//略</span>
+<span class="line-numbers"> <a href="#n3" name="n3">3</a></span><span style="color:#080;font-weight:bold">class</span> <span style="color:#B06;font-weight:bold">HomePage</span> <span style="color:#080;font-weight:bold">extends</span> <span style="color:#036;font-weight:bold">ApplicationPage</span>
+<span class="line-numbers"> <a href="#n4" name="n4">4</a></span>{
+<span class="line-numbers"> <a href="#n5" name="n5">5</a></span>    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">function</span> <span style="color:#06B;font-weight:bold">actionIndex</span>()
+<span class="line-numbers"> <a href="#n6" name="n6">6</a></span>    {
+<span class="line-numbers"> <a href="#n7" name="n7">7</a></span>        <span style="color:#963">$transportation</span> = <span style="color:#963">$this</span>-&gt;model_factory-&gt;newInstance(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">transportation</span><span style="color:#710">'</span></span>);  <span style="color:#777">//＜※自分でnewしないでファクトリで取得</span>
+<span class="line-numbers"> <a href="#n8" name="n8">8</a></span>        <span style="color:#963">$total</span> = <span style="color:#963">$transportation</span>-&gt;getTotal();
+<span class="line-numbers"> <a href="#n9" name="n9">9</a></span>        <span style="color:#963">$cargoList</span> = <span style="color:#963">$transportation</span>-&gt;getCargoList();
+<span class="line-numbers"><strong><a href="#n10" name="n10">10</a></strong></span>
+<span class="line-numbers"><a href="#n11" name="n11">11</a></span>        <span style="color:#963">$this</span>-&gt;data = [
+<span class="line-numbers"><a href="#n12" name="n12">12</a></span>            <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">total</span><span style="color:#710">'</span></span> =&gt; <span style="color:#963">$total</span>,
+<span class="line-numbers"><a href="#n13" name="n13">13</a></span>            <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">cargo_list</span><span style="color:#710">'</span></span> =&gt; <span style="color:#963">$cargoList</span>
+<span class="line-numbers"><a href="#n14" name="n14">14</a></span>        ];
+<span class="line-numbers"><a href="#n15" name="n15">15</a></span>        <span style="color:#963">$this</span>-&gt;view = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">index</span><span style="color:#710">'</span></span>;
+<span class="line-numbers"><a href="#n16" name="n16">16</a></span>    }
+<span class="line-numbers"><a href="#n17" name="n17">17</a></span>}
+</pre></div>
+</div>
+</div>
+
+<h3 id="section-10">今日はここまで</h3>
+
+<p>DIコンテナでできること、よく出てくる基本用語については、これでちょっとイメージがついてきた気がします。
+設計としての特質については分かっていないので、勉強していきたいなと。</p>
+
+<p>分かっていないこと、素朴な疑問をメモ。</p>
+
+<ul>
+  <li>LL（動的型付け言語）において、PHPだけが（違う？）DI/ServiceLocator主流になったのはなぜ？</li>
+  <li>→　モックテストができるようになり、Trait がついても、DIが良いとされたのはなぜ？</li>
+  <li>Rubyの人たちはオープンクラスがあるからそうならなかったの？＜全然わかってなくて書いてます</li>
+</ul>
+
+<h3 id="section-11">関連情報リンクメモ</h3>
+
+<ul>
+  <li><a href="http://www.bear-project.net/blog/first-di-framework" target="_blank">初めてのDIフレームワーク</a></li>
+  <li><a href="http://blog.tojiru.net/article/304867046.html" target="_blank">PHPのDIで動的にオブジェクトを確保する考察</a></li>
+</ul>
+
+				</div><!-- entry-content -->
+			</div><!-- bd -->
+			<footer class="unit-foot">
+				<div class="unit-inner unit-foot-inner">
+					<nav class="pagination">
+						<ul>
+							
+							<li class="prev"><a class="internal" rel="prev"  href="/php/2013/12/22/auraphp-kansai-php-study" title="View Aura for PHP で Hello World（第12回関西PHP勉強会に参加してきた）">&laquo; Aura for PHP で Hello World（第12回関西PHP勉強会に参加してきた）</a></li>
+							
+							
+							
+						</ul>
+					</nav>
+					<p class="gotop">
+						<a href="#page">Back to Top</a>
+					</p>
+				</div>
+			</footer>
+
+		</div><!-- content -->
+	</div><!-- unit-inner -->
+</article>
+
+
+				</div>
+			</div><!-- unit-inner -->
+		</div><!-- unit-body -->
+	</div><!-- body -->
+	<footer class="the-footer">
+		<div class="unit-foot">
+			<div class="unit-inner unit-foot-inner">
+				<div class="misc vcard">
+					<h4 style="margin-bottom:0.5em;">about</h4>
+					<ul>
+                        <li>
+                            Web developer / 大阪 / <a href="http://phpmentors.jp/" target="_blank">PHPメンターズ道場生</a>
+                        </li>
+						<li class="github">
+                            <a href="http://github.com/kumamidori/" rel="me">github: kumamidori</a>
+                             /
+                            <a href="http://twitter.com/kuma_nana/" rel="me">twitter: kuma_nana</a>
+                        </li>
+						<li class="twitter">
+                            <span class="fn email">shigematsu.nana@gmail.com
+                        </li>
+					</ul>
+				</div><!-- misc -->
+				<p class="licence">
+					Theme: <a href="http://layouts-the.me">the_minimum</a> based on <a href="http://jekyllbootstrap.com/">Jekyll-bootstrap</a>.
+					Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a>.
+				</p>
+			</div><!-- unit-foot-inner -->
+		</div><!-- unit-foot -->
+	</footer>
+</div><!-- page -->
+<script>
+	(function(d, s) {
+		var js, fjs = d.getElementsByTagName(s)[0], load = function(url, id) {
+		if (d.getElementById(id)) {return;}
+		js = d.createElement(s); js.src = url; js.id = id;
+		fjs.parentNode.insertBefore(js, fjs);
+		};
+	load('//platform.twitter.com/widgets.js', 'tweetjs');
+	// load('https://apis.google.com/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
+	// load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/php/2013/12/23/auraphp-01-di" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+	}(document, 'script'));
+</script>
+<script>
+/*! A fix for the iOS orientationchange zoom bug.Script by @scottjehl, rebound by @wilto. MIT License.*/
+(function(j){var i=j.document;if(!i.querySelectorAll){return}var l=i.querySelectorAll("meta[name=viewport]")[0],a=l&&l.getAttribute("content"),h=a+", maximum-scale=1.0",d=a+", maximum-scale=10.0",g=true,c=j.orientation,k=0;if(!l){return}function f(){l.setAttribute("content",d);g=true}function b(){l.setAttribute("content",h);g=false}function e(m){c=Math.abs(j.orientation);k=Math.abs(m.gamma);if(k>8&&c===0){if(g){b()}}else{if(!g){f()}}}j.addEventListener("orientationchange",f,false);j.addEventListener("deviceorientation",e,false)})(this);
+</script>
+
+  
+</body>
+</html>
+

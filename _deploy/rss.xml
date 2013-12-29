@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+        <title>kumamidori blog</title>
+        <description>kumamidori blog - kuma_nana</description>
+        <link>http://kumamidori.github.io</link>
+        <link>http://kumamidori.github.io</link>
+        <lastBuildDate>2013-12-29T22:44:41+09:00</lastBuildDate>
+        <pubDate>2013-12-29T22:44:41+09:00</pubDate>
+        <ttl>1800</ttl>
+
+
+        <item>
+                <title>Aura for PHP をさわってみる - vol1. DI -</title>
+                <description>
+&lt;p&gt;Aura はどういうフレームワークか？については、&lt;a href=&quot;2013-12-22-auraphp-kansai-php-study&quot; target=&quot;_blank&quot;&gt;こちら&lt;/a&gt;にすでに書きました。
+今日は、サンプルコードを書いてみて、DIの初歩的なところを理解するところまでです。&lt;/p&gt;
+
+&lt;h3 id=&quot;di&quot;&gt;DIについて、予備知識&lt;/h3&gt;
+
+&lt;p&gt;下記を読む。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://kakutani.com/trans/fowler/injection.html&quot; target=&quot;_blank&quot;&gt;Inversion of Control コンテナと Dependency Injection パターン&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;すみません。正直、議論の詳細はちゃんと読めてないです。
+だんなが、「ファウラーは難しいよ、最初に考えすぎて何も完成しないのは良くない」って言ってるので、今日は先に進みます。&lt;/p&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;これから作ろうとしているサンプルコードの仕様&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;海上輸送の予約アプリケーション&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;貨物船には積載量（キャパシティ）がある&lt;/li&gt;
+  &lt;li&gt;[基本機能] 輸送詳細ページ：船に載せる貨物のCRUD&lt;/li&gt;
+  &lt;li&gt;[基本機能] 輸送詳細ページ：貨物の追加時に、船のキャパシティと付きあわせて、輸送予約の可否を判定&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;なのだけど、今日は単に一覧を表示するところまでです。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;作ったサンプルコード置き場はこちら！&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/kumamidori/HelloAura&quot; target=&quot;_blank&quot;&gt;https://github.com/kumamidori/HelloAura&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;パッケージ構成について&lt;/h3&gt;
+
+&lt;p&gt;Auraではすべてのコードは「パッケージ」として分類されます。「Library First, Framework Second」とうたわれているように、
+機能 = 独立パッケージなわけです。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://auraphp.com/manuals/v1/ja/package-organization/&quot;&gt;http://auraphp.com/manuals/v1/ja/package-organization/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-4&quot;&gt;まずは初期スケルトン作成&lt;/h3&gt;
+
+&lt;p&gt;以下、プロジェクトパス{$PROJECT_PATH} = ~/HelloAura とした場合。&lt;/p&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;# まずは下準備...
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;# プロジェクトスケルトン作成
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;% composer create-project aura/system ~/HelloAura
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;% cd ~/HelloAura
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;# ビルトインサーバ起動でHelloWorld が出ることを確認
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;% php package/Aura.Framework/cli/server
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;# テストが通ることを確認
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;% cd tests
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;&lt;/span&gt;% phpunit
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-5&quot;&gt;パッケージを作る&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;自分が作るアプリケーションコードも、なんでも「パッケージ」にすべきなの？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;公式のデモコードを見ると、パッケージ化されていない「include」というフォルダがプロジェクトの直下にあるから、
+別に全部パッケージ化しなくても良いのかも・・・。&lt;/p&gt;
+
+&lt;p&gt;→　でも、パッケージで作る方が、詰まることなくマニュアル通りに進めそうなので、今回はそうする！&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ベンダー名： &lt;code&gt;Kumamidori&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;アプリケーション名：&lt;code&gt;Transportation&lt;/code&gt;（輸送アプリケーションなので）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;で作る。&lt;/p&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;% cd ~/HelloAura
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;% mkdir -p package/Kumamidori.Transportation/src/Kumamidori/Transportation/Web/Home/views
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;% mkdir package/Kumamidori.Transportation/config
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-6&quot;&gt;作ったパッケージをロード&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;HelloAura/config/_packages&lt;/code&gt;に&lt;code&gt;Kumamidori.Transportation&lt;/code&gt;の一行を追記。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-7&quot;&gt;パッケージの初期設定ファイル&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;HelloAura/package/Kumamidori.Transportation/config/default.php&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;に、アプリケーションコードのパッケージに対するオートローダを追加、ルーティング指定も書いた。&lt;/p&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;font-weight:bold;color:#666&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// add the package to the autoloader&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#963&quot;&gt;$loader&lt;/span&gt;-&amp;gt;add(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;Kumamidori&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\T&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ransportation&lt;/span&gt;&lt;span style=&quot;color:#b0b&quot;&gt;\\&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;, &lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;dirname&lt;/span&gt;(&lt;span style=&quot;color:#069&quot;&gt;__DIR__&lt;/span&gt;) . &lt;span style=&quot;color:#069&quot;&gt;DIRECTORY_SEPARATOR&lt;/span&gt; . &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;src&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// add a route to the page and action&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;get(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;router_map&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;)-&amp;gt;add(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;home&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;, &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;/&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;, [
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;values&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; =&amp;gt; [
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;controller&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; =&amp;gt; &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;home&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;,
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;action&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; =&amp;gt; &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;index&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;,
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;    ],
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;]);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// map the &#39;greet&#39; controller value to a page controller class&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;params[&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;Aura&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\F&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ramework&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\W&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;eb&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\C&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ontroller&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\F&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;actory&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;][&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;map&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;][&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;home&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;] = &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;Kumamidori&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\T&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ransportation&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\W&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;eb&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\H&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ome&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\H&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;omePage&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;これでビルトインサーバを起動すれば、とりあえずホームが表示される。OK。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;疑問：この、↑ &lt;code&gt;$loader&lt;/code&gt; と &lt;code&gt;$di&lt;/code&gt; は、どこから来たの？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;/package/Aura.Framework/src/Aura/Framework/Bootstrap/Factory.php&lt;/code&gt;
+に該当コードがあった。&lt;/p&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;prep&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$mode&lt;/span&gt; = &lt;span style=&quot;color:#069&quot;&gt;null&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$silent_loader&lt;/span&gt; = &lt;span style=&quot;color:#069&quot;&gt;false&lt;/span&gt;)
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;    {
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#777&quot;&gt;// ・・・略&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#777&quot;&gt;// create the autoloader&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$system&lt;/span&gt; = &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;System&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;root);
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#777&quot;&gt;// ・・・略&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$loader&lt;/span&gt; = &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;Loader&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$loader&lt;/span&gt;-&amp;gt;prep(&lt;span style=&quot;color:#963&quot;&gt;$system&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;if&lt;/span&gt; (&lt;span style=&quot;color:#963&quot;&gt;$silent_loader&lt;/span&gt;) {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;            &lt;span style=&quot;color:#963&quot;&gt;$loader&lt;/span&gt;-&amp;gt;setMode(&lt;span style=&quot;color:#963&quot;&gt;$loader&lt;/span&gt;::&lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;MODE_SILENT&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;        }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$loader&lt;/span&gt;-&amp;gt;register();
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#777&quot;&gt;// create the DI container&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt; = &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;Container&lt;/span&gt;(&lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;Forge&lt;/span&gt;(&lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;Config&lt;/span&gt;));
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#777&quot;&gt;// ・・・略&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n19&quot; name=&quot;n19&quot;&gt;19&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;if&lt;/span&gt; (! &lt;span style=&quot;color:#963&quot;&gt;$mode&lt;/span&gt;) {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n20&quot; name=&quot;n20&quot;&gt;20&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;            &lt;span style=&quot;color:#963&quot;&gt;$file&lt;/span&gt; = &lt;span style=&quot;color:#963&quot;&gt;$system&lt;/span&gt;-&amp;gt;getConfigPath(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;_mode&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n21&quot; name=&quot;n21&quot;&gt;21&lt;/a&gt;&lt;/span&gt;            &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;if&lt;/span&gt; (&lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;is_readable&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$file&lt;/span&gt;)) {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n22&quot; name=&quot;n22&quot;&gt;22&lt;/a&gt;&lt;/span&gt;                &lt;span style=&quot;color:#963&quot;&gt;$mode&lt;/span&gt; = &lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;trim&lt;/span&gt;(&lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;file_get_contents&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$file&lt;/span&gt;));
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n23&quot; name=&quot;n23&quot;&gt;23&lt;/a&gt;&lt;/span&gt;            } &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;else&lt;/span&gt; {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n24&quot; name=&quot;n24&quot;&gt;24&lt;/a&gt;&lt;/span&gt;                &lt;span style=&quot;color:#963&quot;&gt;$mode&lt;/span&gt; = &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;default&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;;  &lt;span style=&quot;color:#777&quot;&gt;// ＜※ここでconfig/default が出てくる&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n25&quot; name=&quot;n25&quot;&gt;25&lt;/a&gt;&lt;/span&gt;            }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n26&quot; name=&quot;n26&quot;&gt;26&lt;/a&gt;&lt;/span&gt;        }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n27&quot; name=&quot;n27&quot;&gt;27&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n28&quot; name=&quot;n28&quot;&gt;28&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$read&lt;/span&gt; = &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; (&lt;span style=&quot;color:#963&quot;&gt;$file&lt;/span&gt;) &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;use&lt;/span&gt; (&lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$system&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$loader&lt;/span&gt;) {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n29&quot; name=&quot;n29&quot;&gt;29&lt;/a&gt;&lt;/span&gt;            &lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;require&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$file&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n30&quot; name=&quot;n30&quot;&gt;30&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;        };
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n31&quot; name=&quot;n31&quot;&gt;31&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n32&quot; name=&quot;n32&quot;&gt;32&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$cache&lt;/span&gt; = &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;readCacheConfig(&lt;span style=&quot;color:#963&quot;&gt;$system&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$read&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$mode&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n33&quot; name=&quot;n33&quot;&gt;33&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;if&lt;/span&gt; (! &lt;span style=&quot;color:#963&quot;&gt;$cache&lt;/span&gt;) {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n34&quot; name=&quot;n34&quot;&gt;34&lt;/a&gt;&lt;/span&gt;            &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;readPackageConfig(&lt;span style=&quot;color:#963&quot;&gt;$system&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$read&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$mode&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n35&quot; name=&quot;n35&quot;&gt;35&lt;/a&gt;&lt;/span&gt;        }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n36&quot; name=&quot;n36&quot;&gt;36&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n37&quot; name=&quot;n37&quot;&gt;37&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;readSystemConfig(&lt;span style=&quot;color:#963&quot;&gt;$system&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$read&lt;/span&gt;, &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;default&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n38&quot; name=&quot;n38&quot;&gt;38&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;if&lt;/span&gt; (&lt;span style=&quot;color:#963&quot;&gt;$mode&lt;/span&gt; != &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;default&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;) {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n39&quot; name=&quot;n39&quot;&gt;39&lt;/a&gt;&lt;/span&gt;            &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;readSystemConfig(&lt;span style=&quot;color:#963&quot;&gt;$system&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$read&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$mode&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n40&quot; name=&quot;n40&quot;&gt;40&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;        }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n41&quot; name=&quot;n41&quot;&gt;41&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n42&quot; name=&quot;n42&quot;&gt;42&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;lock();
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n43&quot; name=&quot;n43&quot;&gt;43&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n44&quot; name=&quot;n44&quot;&gt;44&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n45&quot; name=&quot;n45&quot;&gt;45&lt;/a&gt;&lt;/span&gt;    }
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;疑問：&lt;code&gt;$di&lt;/code&gt; で使えるメソッドは何なの？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;HelloAura/package/Aura.Di/src/Aura/Di/Container.php&lt;/code&gt; に定義があった&lt;/p&gt;
+
+&lt;p&gt;(その1) メソッド定義&lt;/p&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#777&quot;&gt;/**&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     * Sets a service object by name.&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     */&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;set&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$key&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$val&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#777&quot;&gt;/**&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     * Gets a service object by key, lazy-loading it as needed.&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     */&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;get&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$key&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#777&quot;&gt;/**&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     * Returns a Lazy that gets a service.&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     *&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     * @param string $key The service name; it does not need to exist yet.&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     * @return Lazy A lazy-load object that gets the named service.&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     */&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;lazyGet&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$key&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n19&quot; name=&quot;n19&quot;&gt;19&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#777&quot;&gt;/**&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n20&quot; name=&quot;n20&quot;&gt;20&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     * Returns a new instance of the specified class, optionally&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n21&quot; name=&quot;n21&quot;&gt;21&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     * with additional override parameters.&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n22&quot; name=&quot;n22&quot;&gt;22&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     */&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n23&quot; name=&quot;n23&quot;&gt;23&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;newInstance&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$class&lt;/span&gt;, &lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;array&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$params&lt;/span&gt; = [], &lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;array&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$setters&lt;/span&gt; = []);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n24&quot; name=&quot;n24&quot;&gt;24&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n25&quot; name=&quot;n25&quot;&gt;25&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#777&quot;&gt;/**&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n26&quot; name=&quot;n26&quot;&gt;26&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     * Returns a Lazy that creates a new instance.&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n27&quot; name=&quot;n27&quot;&gt;27&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     */&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n28&quot; name=&quot;n28&quot;&gt;28&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;lazyNew&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$class&lt;/span&gt;, &lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;array&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$params&lt;/span&gt; = [], &lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;array&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$setters&lt;/span&gt; = []);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n29&quot; name=&quot;n29&quot;&gt;29&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n30&quot; name=&quot;n30&quot;&gt;30&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;    &lt;span style=&quot;color:#777&quot;&gt;/**&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n31&quot; name=&quot;n31&quot;&gt;31&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     * Returns a Factory that creates an object over and over again (as vs&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n32&quot; name=&quot;n32&quot;&gt;32&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     * creating it one time like the lazyNew() or newInstance() methods).&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n33&quot; name=&quot;n33&quot;&gt;33&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;     */&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n34&quot; name=&quot;n34&quot;&gt;34&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;newFactory&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$class&lt;/span&gt;, &lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;array&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$params&lt;/span&gt; = [], &lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;array&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$setters&lt;/span&gt; = [])
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n35&quot; name=&quot;n35&quot;&gt;35&lt;/a&gt;&lt;/span&gt;    {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n36&quot; name=&quot;n36&quot;&gt;36&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;Factory&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;forge, &lt;span style=&quot;color:#963&quot;&gt;$class&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$params&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$setters&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n37&quot; name=&quot;n37&quot;&gt;37&lt;/a&gt;&lt;/span&gt;    }
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;(その2) マジックメソッドでパラメータとセッター定義&lt;/p&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;__get&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$key&lt;/span&gt;)
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;    {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#777&quot;&gt;// ・・・略&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;if&lt;/span&gt; (&lt;span style=&quot;color:#963&quot;&gt;$key&lt;/span&gt; == &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;params&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; || &lt;span style=&quot;color:#963&quot;&gt;$key&lt;/span&gt; == &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;setter&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;) {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;            &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;&lt;span style=&quot;color:#963&quot;&gt;$key&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;        }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#777&quot;&gt;// ・・・略&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;    }
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;dbdi&quot;&gt;DB接続に、DIの「コンストラクトインジェクション」を使う話&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://auraphp.com/manuals/v1/ja/di/&quot; target=&quot;_blank&quot;&gt;Aura DI -ディペンデンシーインジェクション&lt;/a&gt;
+を読む。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;サンプルコードのクラス設計：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;Kumamidori\Transportation\
+  \Database: DBクラス（DB接続そのもの）
+  \Model\AbstractRecord: DBアクセスするモデル系のスーパークラス（DB接続を持っていて利用する）
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;にしてみた。DB名は「transportation」。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-8&quot;&gt;サービスの設定&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;データベース接続を返すサービスの定義&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;Kumamidori\Transportation\Database&lt;/code&gt;&lt;/p&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;font-weight:bold;color:#666&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// ・・・略&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color:#B06;font-weight:bold&quot;&gt;Database&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;{
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$connection&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;__construct&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$hostname&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$dbname&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$username&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$password&lt;/span&gt;)
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;    {
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$connection_factory&lt;/span&gt; = &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;ConnectionFactory&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$dsn&lt;/span&gt; = &lt;span style=&quot;color:#369;font-weight:bold&quot;&gt;sprintf&lt;/span&gt;(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;mysql:host=%s;dbname=%s&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$hostname&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$dbname&lt;/span&gt;);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;connection = &lt;span style=&quot;color:#963&quot;&gt;$connection_factory&lt;/span&gt;-&amp;gt;newInstance(
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;&lt;/span&gt;            &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;mysql&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;,
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;&lt;/span&gt;            &lt;span style=&quot;color:#963&quot;&gt;$dsn&lt;/span&gt;,
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;&lt;/span&gt;            &lt;span style=&quot;color:#963&quot;&gt;$username&lt;/span&gt;,
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;&lt;/span&gt;            &lt;span style=&quot;color:#963&quot;&gt;$password&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;&lt;/span&gt;        );
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;&lt;/span&gt;    }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n19&quot; name=&quot;n19&quot;&gt;19&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;getConnection&lt;/span&gt;()
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n20&quot; name=&quot;n20&quot;&gt;20&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;    {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n21&quot; name=&quot;n21&quot;&gt;21&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;connection;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n22&quot; name=&quot;n22&quot;&gt;22&lt;/a&gt;&lt;/span&gt;    }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n23&quot; name=&quot;n23&quot;&gt;23&lt;/a&gt;&lt;/span&gt;}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;データベース接続サービスの利用側&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;font-weight:bold;color:#666&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// ・・・略&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;abstract&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color:#B06;font-weight:bold&quot;&gt;AbstractRecord&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;extends&lt;/span&gt; &lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;AbstractModel&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;{
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$connection&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;__construct&lt;/span&gt;(&lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;Database&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$db&lt;/span&gt;)
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;    {
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;connection = &lt;span style=&quot;color:#963&quot;&gt;$db&lt;/span&gt;-&amp;gt;getConnection();
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;    }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;サービスの設定&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;HelloAura/package/Kumamidori.Transportation/config/default.php&lt;/code&gt;&lt;/p&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// http://auraphp.com/manuals/v1/ja/di/&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// 方法 5: lazyNew() メソッドのコール（クロージャを使って新しいインスタンスを返す、と同様）&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// この１行だけで、この params がそのまま、Database クラスの __construct の引数になる。引数の順番は関係無いところがGoodですね。&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;params[&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;Kumamidori&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\T&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ransportation&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\D&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;atabase&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;] = [
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;hostname&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; =&amp;gt; &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;localhost&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;,
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;dbname&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; =&amp;gt; &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;transportation&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;,
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;username&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; =&amp;gt; &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;root&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;,
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;password&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; =&amp;gt; &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;,
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;];
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// default params for the AbstractRecord class&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// この１行だけで、この params がそのまま、AbstractRecord クラスの __construct の引数になる。&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;params[&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;Kumamidori&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\T&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ransportation&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\M&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;odel&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\A&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;bstractRecord&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;] = [
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;db&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; =&amp;gt; &lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;lazyGet(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;database&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;),
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;&lt;/span&gt;];
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// define the database service&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;set(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;database&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;lazyNew(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;Kumamidori&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\T&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ransportation&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\D&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;atabase&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;));
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;疑問：こういう設定を書く「順番」は関係あるの？ →　無い。設定ファイルのどこかに書いてあれば正しく解決される。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;疑問：ここで言う「サービス」って何？オブジェクトなの？処理なの？&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;→　DIコンテナで取得、設定できるモノ。
+Aura だと、$di-&amp;gt;get()/ $di-&amp;gt;set() で、任意のキー名を使ってアクセスされる。
+&lt;code&gt;$di-&amp;gt;set(&#39;database&#39;, $di-&amp;gt;lazyNew(&#39;Kumamidori\Transportation\Database&#39;));&lt;/code&gt;
+データベースサービス、具体的には、「コンテナがDatabaseオブジェクトをlazyNewする」というサービスを設定したら、
+&lt;code&gt;$di-&amp;gt;lazyGet(&#39;database&#39;)&lt;/code&gt; でそれを取得することができるようになる。
+言い換えるとなんだろう・・・「組み立てにより生成されるインスタンスが提供する動的な機能のこと」を指すのかな？・・・自信なし。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;di-1&quot;&gt;モデルオブジェクトのファクトリに、DI「セッターインジェクション」を使う&lt;/h3&gt;
+
+&lt;p&gt;気力が尽きてきたので省きます。コードだけ抜粋。クロージャってPHP実務で使った記憶ほとんど無いけど、便利そう。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ファクトリの定義&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;font-weight:bold;color:#666&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// 略&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color:#B06;font-weight:bold&quot;&gt;ModelFactory&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;{
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#777&quot;&gt;// a map of model names to factory closures&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$map&lt;/span&gt; = [];
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;__construct&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$map&lt;/span&gt; = [])
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;    {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;map = &lt;span style=&quot;color:#963&quot;&gt;$map&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;    }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;newInstance&lt;/span&gt;(&lt;span style=&quot;color:#963&quot;&gt;$model_name&lt;/span&gt;)
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;&lt;/span&gt;    {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$factory&lt;/span&gt; = &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;map[&lt;span style=&quot;color:#963&quot;&gt;$model_name&lt;/span&gt;];
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$model&lt;/span&gt; = &lt;span style=&quot;color:#963&quot;&gt;$factory&lt;/span&gt;();
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$model&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;&lt;/span&gt;    }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n19&quot; name=&quot;n19&quot;&gt;19&lt;/a&gt;&lt;/span&gt;}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ファクトリを利用する（セッターインジェクトされる）側&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;font-weight:bold;color:#666&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;//・・・略&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;use&lt;/span&gt; &lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;Kumamidori&lt;/span&gt;\&lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;Transportation&lt;/span&gt;\&lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;Model&lt;/span&gt;\&lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;ModelFactory&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color:#B06;font-weight:bold&quot;&gt;ApplicationPage&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;extends&lt;/span&gt; &lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;AbstractPage&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;{
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$model_factory&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;setModelFactory&lt;/span&gt;(&lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;ModelFactory&lt;/span&gt; &lt;span style=&quot;color:#963&quot;&gt;$model_factory&lt;/span&gt;)
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;    {
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;model_factory = &lt;span style=&quot;color:#963&quot;&gt;$model_factory&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;&lt;/span&gt;    }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;&lt;/span&gt;}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;設定&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// default params for the model factory&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;params[&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;Kumamidori&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\T&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ransportation&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\M&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;odel&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\M&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;odelFactory&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;] = [
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;map&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; =&amp;gt; [
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;transportation&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; =&amp;gt; &lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;newFactory(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;Kumamidori&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\T&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ransportation&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\M&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;odel&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\T&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ransportation&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\T&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ransportationRecord&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;),
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;    ]
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;];
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// define the model factory service&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;set(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;model_factory&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;, &lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;lazyNew(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;Kumamidori&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\T&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ransportation&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\M&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;odel&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\M&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;odelFactory&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;));
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// after construction, the Forge will call ApplicationPage::setModelFactory()&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;// and inject the &#39;model_factory&#39; service object&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;setter[&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;Kumamidori&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\T&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;ransportation&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\W&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;eb&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;\A&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;pplicationPage&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;][&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;setModelFactory&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;] = &lt;span style=&quot;color:#963&quot;&gt;$di&lt;/span&gt;-&amp;gt;lazyGet(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;model_factory&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;);
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-9&quot;&gt;コントローラ&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;HelloAura/src/Kumamidori/Transportation/Web/Home/HomePage.php&lt;/code&gt;&lt;/p&gt;
+
+&lt;div&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;font-weight:bold;color:#666&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#777&quot;&gt;//略&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color:#B06;font-weight:bold&quot;&gt;HomePage&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;extends&lt;/span&gt; &lt;span style=&quot;color:#036;font-weight:bold&quot;&gt;ApplicationPage&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;{
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;    &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color:#080;font-weight:bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color:#06B;font-weight:bold&quot;&gt;actionIndex&lt;/span&gt;()
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;    {
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$transportation&lt;/span&gt; = &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;model_factory-&amp;gt;newInstance(&lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;transportation&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;);  &lt;span style=&quot;color:#777&quot;&gt;//＜※自分でnewしないでファクトリで取得&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$total&lt;/span&gt; = &lt;span style=&quot;color:#963&quot;&gt;$transportation&lt;/span&gt;-&amp;gt;getTotal();
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$cargoList&lt;/span&gt; = &lt;span style=&quot;color:#963&quot;&gt;$transportation&lt;/span&gt;-&amp;gt;getCargoList();
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;data = [
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;&lt;/span&gt;            &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;total&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; =&amp;gt; &lt;span style=&quot;color:#963&quot;&gt;$total&lt;/span&gt;,
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;&lt;/span&gt;            &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;cargo_list&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt; =&amp;gt; &lt;span style=&quot;color:#963&quot;&gt;$cargoList&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;&lt;/span&gt;        ];
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;&lt;/span&gt;        &lt;span style=&quot;color:#963&quot;&gt;$this&lt;/span&gt;-&amp;gt;view = &lt;span style=&quot;background-color:hsla(0,100%,50%,0.05)&quot;&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;span style=&quot;color:#D20&quot;&gt;index&lt;/span&gt;&lt;span style=&quot;color:#710&quot;&gt;&#39;&lt;/span&gt;&lt;/span&gt;;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;&lt;/span&gt;    }
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;&lt;/span&gt;}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-10&quot;&gt;今日はここまで&lt;/h3&gt;
+
+&lt;p&gt;DIコンテナでできること、よく出てくる基本用語については、これでちょっとイメージがついてきた気がします。
+設計としての特質については分かっていないので、勉強していきたいなと。&lt;/p&gt;
+
+&lt;p&gt;分かっていないこと、素朴な疑問をメモ。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;LL（動的型付け言語）において、PHPだけが（違う？）DI/ServiceLocator主流になったのはなぜ？&lt;/li&gt;
+  &lt;li&gt;→　モックテストができるようになり、Trait がついても、DIが良いとされたのはなぜ？&lt;/li&gt;
+  &lt;li&gt;Rubyの人たちはオープンクラスがあるからそうならなかったの？＜全然わかってなくて書いてます&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-11&quot;&gt;関連情報リンクメモ&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bear-project.net/blog/first-di-framework&quot; target=&quot;_blank&quot;&gt;初めてのDIフレームワーク&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.tojiru.net/article/304867046.html&quot; target=&quot;_blank&quot;&gt;PHPのDIで動的にオブジェクトを確保する考察&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+                <link>http://kumamidori.github.io/php/2013/12/23/auraphp-01-di</link>
+                <guid>http://kumamidori.github.io/php/2013/12/23/auraphp-01-di</guid>
+                <pubDate>2013-12-23T00:00:00Z</pubDate>
+        </item>
+
+        <item>
+                <title>Aura for PHP で Hello World（第12回関西PHP勉強会に参加してきた）</title>
+                <description>
+&lt;p&gt;第12回関西PHP勉強会に参加しました。もくもく会でした。&lt;/p&gt;
+
+&lt;p&gt;各自、好きな作業をする、という趣旨で、私は「フレームワーク、&lt;a href=&quot;http://auraphp.com/&quot; target=&quot;_blank&quot;&gt;Aura for PHP&lt;/a&gt;をさわってみる」というテーマにしました。&lt;/p&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;このテーマを選んだ理由&lt;/h3&gt;
+
+&lt;p&gt;これのマニュアル翻訳を一部やったので、実際にさわってみようと思って。
+&lt;a href=&quot;http://auraphp.com/manuals/v1/ja/&quot; target=&quot;_blank&quot;&gt;http://auraphp.com/manuals/v1/ja/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;aura-for-php-&quot;&gt;Aura for PHP の特徴&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://auraphp.com/&quot; target=&quot;_blank&quot;&gt;公式マニュアル&lt;/a&gt;より引用：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Auraの主な目標は、標準に準拠し、どのコードベースでも使うことができて、
+高品質にテストされた、疎結合なライブラリを提供することです。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;「疎結合なライブラリ」とは？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Symfonyなどのフルスタックフレームワークは、一部のバンドルだけ取り出して使う、といったことが難しいです。
+Auraは、それができます（Library First, Framework Second、とあります）。
+独立したパッケージの集合なので、開発者の好きなように、プロジェクト全体で使うこともできれば、
+一部だけを取り入れて使うということもできます。&lt;/p&gt;
+
+&lt;p&gt;Composerの流れを受けて出てきたコンポーネント志向、ということかなと思います。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;リードは、Zendのコミッタ等された、PHP-FIG策定メンバー、&lt;a href=&quot;http://paul-m-jones.com/&quot; target=&quot;_blank&quot;&gt;pmjones&lt;/a&gt;さん。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;hello-world-&quot;&gt;とりあえず Hello World するには？&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://auraphp.com/framework&quot; target=&quot;_blank&quot;&gt;http://auraphp.com/framework&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;↑この手順ママで即動くので省きます。
+注意点は、「Remove the Demo Package」というセクションの手順を飛ばさないでやることくらい。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;作ったもの&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/kumamidori/HelloAura&quot; target=&quot;_blank&quot;&gt;https://github.com/kumamidori/HelloAura&lt;/a&gt;&lt;/p&gt;
+
+&lt;strike&gt;ちょっとしか動かせていない！ので、コードの説明は省きます。もうちょっと理解が進んだら、また別記事として書きたいところ。&lt;/strike&gt;
+
+&lt;p&gt;→ 後日ちょっと進められたので、別記事を&lt;a href=&quot;2013-12-23-auraphp-01-package&quot; target=&quot;_blank&quot;&gt;こちら&lt;/a&gt;に書きました。&lt;/p&gt;
+
+&lt;p&gt;もくもく会の当日お世話になった皆様、ありがとうございました！&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;関連リンク：イベント参加者レポート&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.1x1.jp/blog/2013/12/phpdbg.html&quot;&gt;PHP 5.6 に採用されるデバッガ phpdbg を使ってみた&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://tanakahisateru.hatenablog.jp/entry/2013/12/22/030817&quot;&gt;PHP関西勉強会でYii2-alphaを試しました&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;aura-for-php&quot;&gt;関連リンク：Aura for PHPの紹介記事&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://yuubiseiharukana.blog.shinobi.jp/Entry/1168/&quot; target=&quot;_blank&quot;&gt;http://yuubiseiharukana.blog.shinobi.jp/Entry/1168/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+                <link>http://kumamidori.github.io/php/2013/12/22/auraphp-kansai-php-study</link>
+                <guid>http://kumamidori.github.io/php/2013/12/22/auraphp-kansai-php-study</guid>
+                <pubDate>2013-12-22T00:00:00Z</pubDate>
+        </item>
+
+        <item>
+                <title>大阪でIT系勉強会ができる会議室</title>
+                <description>
+&lt;p&gt;会社の先輩方や @atakig さんから、大阪市内で借りられる会議室のことを教えてもらったのでメモ。&lt;/p&gt;
+
+&lt;p&gt;条件：会議室スペースを希望（他の人の会話が聞こえてこない方が良い）。プロジェクターあると良い。&lt;/p&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;サイバーエージェント大阪オフィス、セミナールーム&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;大部屋。無料。プロジェクタも無料。
+&lt;a href=&quot;http://caosaka.github.io/atnd.html&quot;&gt;http://caosaka.github.io/atnd.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;コワーキングスペース往来、レンタルスペース&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://ourai.jimdo.com/%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E5%88%A9%E7%94%A8/&quot; target=&quot;_blank&quot;&gt;http://ourai.jimdo.com/%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E5%88%A9%E7%94%A8/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;産創館&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;小部屋もあり。けっこう前から予約しないとダメらしい。
+&lt;a href=&quot;http://shisetsu.sansokan.jp/&quot;&gt;http://shisetsu.sansokan.jp/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;靭テニスセンター地下&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.utsubogroup.com/facilities/BH250602.pdf&quot;&gt;http://www.utsubogroup.com/facilities/BH250602.pdf&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-4&quot;&gt;その他&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;オオサカンスペース(魅力的だけど、会議室ではない。オープンスペースでも良い人ならOK。)&lt;/li&gt;
+  &lt;li&gt;公共の区民センター(安いしプロジェクタある、けど遠い)&lt;/li&gt;
+  &lt;li&gt;扇町メビック(プロジェクタある、けど高い)&lt;/li&gt;
+  &lt;li&gt;THE COMMON PLACE 大阪（10名キャパだと1時間あたり1人2000円以上かかる。プロジェクタレンタルは料金に含まれる）。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+                <link>http://kumamidori.github.io/diary/2013/12/19/osaka-study-space</link>
+                <guid>http://kumamidori.github.io/diary/2013/12/19/osaka-study-space</guid>
+                <pubDate>2013-12-19T00:00:00Z</pubDate>
+        </item>
+
+        <item>
+                <title>道場生ブログ更新</title>
+                <description>
+&lt;p&gt;このたびPHPメンターズ道場生になりました！そしてブログを書かせて頂きました。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://phpmentors.jp/post/70238469707/kwansaiit-ddd-report&quot; target=&quot;_blank&quot;&gt;第28回関西IT勉強宴会 “ドメイン駆動設計を知ろう” に参加してきました&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;書いて良かった。本やスライドをたくさん読まざるをえなかったから。&lt;/p&gt;
+
+&lt;p&gt;Try：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;MBAとWiFiを忘れない。&lt;/li&gt;
+  &lt;li&gt;写真を撮る。許可を得て録音する。&lt;/li&gt;
+  &lt;li&gt;Ust や Youtube live もそのうちやってみたいな。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+                <link>http://kumamidori.github.io/php/2013/12/17/dojo</link>
+                <guid>http://kumamidori.github.io/php/2013/12/17/dojo</guid>
+                <pubDate>2013-12-17T00:00:00Z</pubDate>
+        </item>
+
+        <item>
+                <title>ブログをはてなダイアリーから Github Pages に移行した</title>
+                <description>
+&lt;p&gt;やっとブログを引っ越した！嬉しい〜。そのうち何か書きたいな。&lt;/p&gt;
+
+&lt;p&gt;旧ブログはこちらでした。
+&lt;a href=&quot;http://d.hatena.ne.jp/kumamidori/&quot;&gt;http://d.hatena.ne.jp/kumamidori/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;今見ると明らかに間違っているエントリーが多過ぎる。もう消そうかな。
+はてなは今、プライベート用と仕事用の上記、２つのアカウントを持っている。
+複数アカウントだと有料なんだよね・・・仕事用のアカウントはそのうち閉じようと。
+ちゃんと書けたなと唯一思う記事が下記。これだけあとでこっちに移植しておこう。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://d.hatena.ne.jp/kumamidori/20130527/p1&quot;&gt;PHPで認可、権限管理（その１、ZfcRbacのサンプルを動かす）&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;kumamidori っていうアカウント名も、不評で後悔しています。Twitter の方は kuma_nana で、統一ができていないし・・・。
+（若かりし頃、村上春樹の「ノルウェイの森」が好きで、その小説に「みどり」と「春の熊」が出てくるので、そこから取った）。&lt;/p&gt;
+
+&lt;p&gt;１２月は２つの勉強会に参加予定。&lt;/p&gt;
+</description>
+                <link>http://kumamidori.github.io/diary/2013/12/09/blog-change</link>
+                <guid>http://kumamidori.github.io/diary/2013/12/09/blog-change</guid>
+                <pubDate>2013-12-09T00:00:00Z</pubDate>
+        </item>
+
+
+</channel>
+</rss>
