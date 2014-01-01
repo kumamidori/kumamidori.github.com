@@ -7,10 +7,10 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>kumamidori blog</title>
+	<title>はじめてのSymfony2 - 2.4でファイルアップロード -</title>
 	<meta name="author" content="kuma_nana">
 	<link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
-	<link href="http://feeds.feedburner.com/" rel="alternate" title="kumamidori blog" type="application/atom+xml">
+	<link href="http://feeds.feedburner.com/" rel="alternate" title="はじめてのSymfony2 - 2.4でファイルアップロード -" type="application/atom+xml">
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
 </head>
 <body>
@@ -36,42 +36,82 @@
 			<div class="unit-inner unit-body-inner">
 				<div class="entry-content">
 					
-<article class="unit-article layout-page">
+<article class="unit-article layout-post">
 	<div class="unit-inner unit-article-inner">
 		<div class="content">
 			<header>
 				<div class="unit-head">
 					<div class="unit-inner unit-head-inner">
-						<h1 class="h2 entry-title">Home</h1>
+						<h1 class="h2 entry-title">はじめてのSymfony2 - 2.4でファイルアップロード -</h1>
 					</div><!-- unit-inner -->
 				</div><!-- unit-head -->
 			</header>
 
 			<div class="bd">
 				<div class="entry-content">
+                    <div class="meta">
+                        <p class="date-publish">
+                            <date class="date-pub" title="2014-01-02T00:00:00Z" datetime="2014-01-02T00:00:00Z" pubdate>
+                                <span>2014-01-02</span>
+                            </date>
+                        </p>
+                    </div><!-- meta -->
 					
-<ul class="posts">
-  
-    <li><span>2014-01-02</span> &raquo; <a href="/php/2014/01/02/symfony-01-basic">はじめてのSymfony2 - 2.4でファイルアップロード -</a></li>
-  
-    <li><span>2013-12-23</span> &raquo; <a href="/php/2013/12/23/auraphp-01-di">Aura for PHP をさわってみる - vol1. DI -</a></li>
-  
-    <li><span>2013-12-22</span> &raquo; <a href="/php/2013/12/22/auraphp-kansai-php-study">Aura for PHP で Hello World（第12回関西PHP勉強会に参加してきた）</a></li>
-  
-    <li><span>2013-12-19</span> &raquo; <a href="/diary/2013/12/19/osaka-study-space">大阪でIT系勉強会ができる会議室</a></li>
-  
-    <li><span>2013-12-17</span> &raquo; <a href="/php/2013/12/17/dojo">道場生ブログ更新</a></li>
-  
-    <li><span>2013-12-09</span> &raquo; <a href="/diary/2013/12/09/blog-change">ブログをはてなダイアリーから Github Pages に移行した</a></li>
-  
+<p>こういう自分専用のメモは、ブログじゃなくてローカルに保存した方が良いかな、と悩みつつ。</p>
+
+<p>Symfony2を使ったことが一度も無い。それだと何かと困る（仕事じゃなくて、個人学習上）。入門することにした。</p>
+
+<p>プルリク歓迎の日本語訳プロジェクトもあるのでした（内容が一部古いけれども）。<a href="http://docs.symfony.gr.jp/" target="_blank">Symfony2 books 日本語訳</a>。
+オリジナルのブログチュートリアルもあって勉強になります。</p>
+
+<h3 id="section">サンプルコード仕様</h3>
+
+<h4 id="section-1">ファイルアップロード</h4>
+
+<ul>
+  <li>ファイルをアップロードできる</li>
+  <li>ファイル一覧ページ（ホーム）が見られる</li>
 </ul>
 
+<p>※そのうちコレをやりたいけど、今日はできなかった→<a href="http://rosylilly.hatenablog.com/entry/2013/10/21/190019" target="_blank">鳩舎「ファイルアップローダを作ろう」</a></p>
+
+<h3 id="section-2">作ったサンプルコード置き場はこちら</h3>
+
+<p><a href="https://github.com/kumamidori/SymfonyMinimamFileUpload" target="_blank">https://github.com/kumamidori/SymfonyMinimamFileUpload</a></p>
+
+<p><a href="http://symfony.com/doc/current/cookbook/doctrine/file_uploads.html" target="_blank">公式クックブック「How to handle File Uploads with Doctrine」</a>ママです</p>
+
+<h3 id="section-3">メモ</h3>
+
+<ul>
+  <li>このフレームワークで作った結果、自分が仕事で作っている／作ってきた様々なコードよりも、明らかに読みやすいものができた。考えていきたいところ。</li>
+  <li>マニュアルと同梱デモコードが充実している。</li>
+  <li>マニュアル中のコードは、読みやすさのため、細かいところは端折ってある。そのまま動くコードっていうわけでもない。</li>
+  <li>フォームがエンティティとタイプから成る作りは分かりやすかった。エンティティのメソッドをTwigでそのまま使えて感動。これってsmartyでもできるのかな。。。</li>
+  <li>フォームの validation.yml は、配置しただけで自動ロードされる</li>
+  <li>TODO：Doctrine、DBAL も初めて使ったので学習</li>
+</ul>
+
+<h3 id="section-4">参考リンク</h3>
+
+<ul>
+  <li><a href="http://www.slideshare.net/fivestar/symfony2-8203873" title="2011年のスライド ">2011年スライド「Symfony2のフォームフレームワーク」（@fivestr）</a></li>
+  <li><a href="https://groups.google.com/forum/#!topic/symfony-users-ja/J_I1kr_jP_k">Symfonyユーザ会Googleグループに投稿されていた、実務的なファイルアップロード設計例(@brtriver)</a></li>
+</ul>
 
 				</div><!-- entry-content -->
 			</div><!-- bd -->
-
 			<footer class="unit-foot">
 				<div class="unit-inner unit-foot-inner">
+					<nav class="pagination">
+						<ul>
+							
+							<li class="prev"><a class="internal" rel="prev"  href="/php/2013/12/23/auraphp-01-di" title="View Aura for PHP をさわってみる - vol1. DI -">&laquo; Aura for PHP をさわってみる - vol1. DI -</a></li>
+							
+							
+							
+						</ul>
+					</nav>
 					<p class="gotop">
 						<a href="#page">Back to Top</a>
 					</p>
@@ -123,7 +163,7 @@
 		};
 	load('//platform.twitter.com/widgets.js', 'tweetjs');
 	// load('https://apis.google.com/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
-	// load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/index.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+	// load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/php/2014/01/02/symfony-01-basic" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
 	}(document, 'script'));
 </script>
 <script>

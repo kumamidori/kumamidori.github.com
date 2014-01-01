@@ -4,13 +4,63 @@
  <title>kumamidori blog</title>
  <link href="http://kumamidori.github.io/" rel="self"/>
  <link href="http://kumamidori.github.io"/>
- <updated>2013-12-29T22:44:41+09:00</updated>
+ <updated>2014-01-02T00:57:31+09:00</updated>
  <id>http://kumamidori.github.io</id>
  <author>
    <name>kuma_nana</name>
    <email>shigematsu.nana@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>はじめてのSymfony2 - 2.4でファイルアップロード -</title>
+   <link href="http://kumamidori.github.io/php/2014/01/02/symfony-01-basic"/>
+   <updated>2014-01-02T00:00:00Z</updated>
+   <id>http://kumamidori.github.io/php/2014/01/02/symfony-01-basic</id>
+   <content type="html">
+&lt;p&gt;こういう自分専用のメモは、ブログじゃなくてローカルに保存した方が良いかな、と悩みつつ。&lt;/p&gt;
+
+&lt;p&gt;Symfony2を使ったことが一度も無い。それだと何かと困る（仕事じゃなくて、個人学習上）。入門することにした。&lt;/p&gt;
+
+&lt;p&gt;プルリク歓迎の日本語訳プロジェクトもあるのでした（内容が一部古いけれども）。&lt;a href=&quot;http://docs.symfony.gr.jp/&quot; target=&quot;_blank&quot;&gt;Symfony2 books 日本語訳&lt;/a&gt;。
+オリジナルのブログチュートリアルもあって勉強になります。&lt;/p&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;サンプルコード仕様&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;ファイルアップロード&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ファイルをアップロードできる&lt;/li&gt;
+  &lt;li&gt;ファイル一覧ページ（ホーム）が見られる&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;※そのうちコレをやりたいけど、今日はできなかった→&lt;a href=&quot;http://rosylilly.hatenablog.com/entry/2013/10/21/190019&quot; target=&quot;_blank&quot;&gt;鳩舎「ファイルアップローダを作ろう」&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;作ったサンプルコード置き場はこちら&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/kumamidori/SymfonyMinimamFileUpload&quot; target=&quot;_blank&quot;&gt;https://github.com/kumamidori/SymfonyMinimamFileUpload&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://symfony.com/doc/current/cookbook/doctrine/file_uploads.html&quot; target=&quot;_blank&quot;&gt;公式クックブック「How to handle File Uploads with Doctrine」&lt;/a&gt;ママです&lt;/p&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;メモ&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;このフレームワークで作った結果、自分が仕事で作っている／作ってきた様々なコードよりも、明らかに読みやすいものができた。考えていきたいところ。&lt;/li&gt;
+  &lt;li&gt;マニュアルと同梱デモコードが充実している。&lt;/li&gt;
+  &lt;li&gt;マニュアル中のコードは、読みやすさのため、細かいところは端折ってある。そのまま動くコードっていうわけでもない。&lt;/li&gt;
+  &lt;li&gt;フォームがエンティティとタイプから成る作りは分かりやすかった。エンティティのメソッドをTwigでそのまま使えて感動。これってsmartyでもできるのかな。。。&lt;/li&gt;
+  &lt;li&gt;フォームの validation.yml は、配置しただけで自動ロードされる&lt;/li&gt;
+  &lt;li&gt;TODO：Doctrine、DBAL も初めて使ったので学習&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-4&quot;&gt;参考リンク&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.slideshare.net/fivestar/symfony2-8203873&quot; title=&quot;2011年のスライド &quot;&gt;2011年スライド「Symfony2のフォームフレームワーク」（@fivestr）&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://groups.google.com/forum/#!topic/symfony-users-ja/J_I1kr_jP_k&quot;&gt;Symfonyユーザ会Googleグループに投稿されていた、実務的なファイルアップロード設計例(@brtriver)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Aura for PHP をさわってみる - vol1. DI -</title>
