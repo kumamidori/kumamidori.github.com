@@ -57,7 +57,7 @@
                         </p>
                     </div><!-- meta -->
 					
-<p>Aura はどういうフレームワークか？については、<a href="2013-12-22-auraphp-kansai-php-study" target="_blank">こちら</a>にすでに書きました。
+<p>Aura はどういうフレームワークか？については、<a href="http://kumamidori.github.io/php/2013/12/22/auraphp-kansai-php-study/" target="_blank">こちら</a>にすでに書きました。
 今日は、サンプルコードを書いてみて、DIの初歩的なところを理解するところまでです。</p>
 
 <h3 id="di">DIについて、予備知識</h3>
@@ -530,6 +530,23 @@ Aura だと、$di-&gt;get()/ $di-&gt;set() で、任意のキー名を使って�
 <ul>
   <li><a href="http://www.bear-project.net/blog/first-di-framework" target="_blank">初めてのDIフレームワーク</a></li>
   <li><a href="http://blog.tojiru.net/article/304867046.html" target="_blank">PHPのDIで動的にオブジェクトを確保する考察</a></li>
+  <li><a href="http://www.bear-project.net/blog/2011/10/ray-di-on-aura-di/" target="_blank">Ray.Di on Aura.Di</a></li>
+</ul>
+
+<h3 id="section-12">追記</h3>
+
+<p>アドバイスを頂いたので貼らせて頂きます（ありがとうございます）。</p>
+
+<ul>
+  <li>
+    <p><a href="https://twitter.com/ktz_alias/status/416426298018238464" target="_blank">@ktz_alias さんより：@kuma_nana さっきRTで流れてきたので、亀レスになりますが、疑問点のtraitかDIかについて。どちらも依存を解決する手法で、乱暴に分類すると、traitは静的解決。DIは動的（実行時）解決。</a></p>
+  </li>
+  <li>
+    <p><a href="https://twitter.com/ktz_alias/status/416426966330245120" target="_blank">たとえばデータベース接続。開発用、単体テスト用、結合テスト用などで使い分けようとすると、接続先をど意的に解決する必要が出てきます。この用途にはDIが適しているでしょう。</a></p>
+  </li>
+  <li>
+    <p><a href="https://twitter.com/ktz_alias/status/416427188791934976" target="_blank">一方、貨物を輸送するというコンテキストは、貨物と輸送ロールが静的に結びついているため、traitが適していると思います。</a></p>
+  </li>
 </ul>
 
 				</div><!-- entry-content -->

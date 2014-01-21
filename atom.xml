@@ -4,7 +4,7 @@
  <title>kumamidori blog</title>
  <link href="http://kumamidori.github.io/" rel="self"/>
  <link href="http://kumamidori.github.io"/>
- <updated>2014-01-02T00:57:31+09:00</updated>
+ <updated>2014-01-21T22:21:57+09:00</updated>
  <id>http://kumamidori.github.io</id>
  <author>
    <name>kuma_nana</name>
@@ -68,7 +68,7 @@
    <updated>2013-12-23T00:00:00Z</updated>
    <id>http://kumamidori.github.io/php/2013/12/23/auraphp-01-di</id>
    <content type="html">
-&lt;p&gt;Aura はどういうフレームワークか？については、&lt;a href=&quot;2013-12-22-auraphp-kansai-php-study&quot; target=&quot;_blank&quot;&gt;こちら&lt;/a&gt;にすでに書きました。
+&lt;p&gt;Aura はどういうフレームワークか？については、&lt;a href=&quot;http://kumamidori.github.io/php/2013/12/22/auraphp-kansai-php-study/&quot; target=&quot;_blank&quot;&gt;こちら&lt;/a&gt;にすでに書きました。
 今日は、サンプルコードを書いてみて、DIの初歩的なところを理解するところまでです。&lt;/p&gt;
 
 &lt;h3 id=&quot;di&quot;&gt;DIについて、予備知識&lt;/h3&gt;
@@ -541,6 +541,23 @@ Aura だと、$di-&amp;gt;get()/ $di-&amp;gt;set() で、任意のキー名を�
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;http://www.bear-project.net/blog/first-di-framework&quot; target=&quot;_blank&quot;&gt;初めてのDIフレームワーク&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://blog.tojiru.net/article/304867046.html&quot; target=&quot;_blank&quot;&gt;PHPのDIで動的にオブジェクトを確保する考察&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bear-project.net/blog/2011/10/ray-di-on-aura-di/&quot; target=&quot;_blank&quot;&gt;Ray.Di on Aura.Di&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-12&quot;&gt;追記&lt;/h3&gt;
+
+&lt;p&gt;アドバイスを頂いたので貼らせて頂きます（ありがとうございます）。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://twitter.com/ktz_alias/status/416426298018238464&quot; target=&quot;_blank&quot;&gt;@ktz_alias さんより：@kuma_nana さっきRTで流れてきたので、亀レスになりますが、疑問点のtraitかDIかについて。どちらも依存を解決する手法で、乱暴に分類すると、traitは静的解決。DIは動的（実行時）解決。&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://twitter.com/ktz_alias/status/416426966330245120&quot; target=&quot;_blank&quot;&gt;たとえばデータベース接続。開発用、単体テスト用、結合テスト用などで使い分けようとすると、接続先をど意的に解決する必要が出てきます。この用途にはDIが適しているでしょう。&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://twitter.com/ktz_alias/status/416427188791934976&quot; target=&quot;_blank&quot;&gt;一方、貨物を輸送するというコンテキストは、貨物と輸送ロールが静的に結びついているため、traitが適していると思います。&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 </content>
  </entry>
@@ -626,18 +643,33 @@ Auraは、それができます（Library First, Framework Second、とありま
    <content type="html">
 &lt;p&gt;会社の先輩方や @atakig さんから、大阪市内で借りられる会議室のことを教えてもらったのでメモ。&lt;/p&gt;
 
-&lt;p&gt;条件：会議室スペースを希望（他の人の会話が聞こえてこない方が良い）。プロジェクターあると良い。&lt;/p&gt;
-
-&lt;h4 id=&quot;section&quot;&gt;サイバーエージェント大阪オフィス、セミナールーム&lt;/h4&gt;
+&lt;p&gt;条件：&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;大部屋。無料。プロジェクタも無料。
-&lt;a href=&quot;http://caosaka.github.io/atnd.html&quot;&gt;http://caosaka.github.io/atnd.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;会議室スペースを希望（他の人の会話が聞こえてこない方が良い）&lt;/li&gt;
+  &lt;li&gt;プロジェクターあると良い。&lt;/li&gt;
+  &lt;li&gt;土日利用可&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;無料スペースのリンク集&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;大阪だと、CA、MS、IIJさん。でも、休日利用は、小規模な勉強会だと無理みたい。
+&lt;a href=&quot;http://www.doorkeeper.jp/%E4%BC%9A%E5%A0%B4&quot; target=&quot;_blank&quot;&gt;http://www.doorkeeper.jp/%E4%BC%9A%E5%A0%B4&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;CAさん。大部屋。無料。プロジェクタも無料。
+&lt;a href=&quot;http://caosaka.github.io/atnd.html&quot;&gt;http://caosaka.github.io/atnd.html&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h4 id=&quot;section-1&quot;&gt;コワーキングスペース往来、レンタルスペース&lt;/h4&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://ourai.jimdo.com/%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E5%88%A9%E7%94%A8/&quot; target=&quot;_blank&quot;&gt;http://ourai.jimdo.com/%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E5%88%A9%E7%94%A8/&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;プロジェクタも事前に希望したら料金内で借りられる。
+&lt;a href=&quot;http://ourai.jimdo.com/%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E5%88%A9%E7%94%A8/&quot; target=&quot;_blank&quot;&gt;コワーキングスペース往来、レンタルスペース&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h3 id=&quot;section-2&quot;&gt;産創館&lt;/h3&gt;
 
@@ -648,7 +680,10 @@ Auraは、それができます（Library First, Framework Second、とありま
 
 &lt;h3 id=&quot;section-3&quot;&gt;靭テニスセンター地下&lt;/h3&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://www.utsubogroup.com/facilities/BH250602.pdf&quot;&gt;http://www.utsubogroup.com/facilities/BH250602.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;プロジェクタは持ち込みが必要。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.utsubogroup.com/facilities/BH250602.pdf&quot;&gt;http://www.utsubogroup.com/facilities/BH250602.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h3 id=&quot;section-4&quot;&gt;その他&lt;/h3&gt;
 
@@ -657,6 +692,7 @@ Auraは、それができます（Library First, Framework Second、とありま
   &lt;li&gt;公共の区民センター(安いしプロジェクタある、けど遠い)&lt;/li&gt;
   &lt;li&gt;扇町メビック(プロジェクタある、けど高い)&lt;/li&gt;
   &lt;li&gt;THE COMMON PLACE 大阪（10名キャパだと1時間あたり1人2000円以上かかる。プロジェクタレンタルは料金に含まれる）。&lt;/li&gt;
+  &lt;li&gt;レンタル会議室で探すとたくさん出てくるけれど、プロジェクタ対応していない部屋が多いもよう。&lt;/li&gt;
 &lt;/ul&gt;
 </content>
  </entry>
