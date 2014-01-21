@@ -10,17 +10,25 @@ tags: [diary]
 
 会社の先輩方や @atakig さんから、大阪市内で借りられる会議室のことを教えてもらったのでメモ。
 
-条件：会議室スペースを希望（他の人の会話が聞こえてこない方が良い）。プロジェクターあると良い。
+条件：
 
-#### サイバーエージェント大阪オフィス、セミナールーム
+- 会議室スペースを希望（他の人の会話が聞こえてこない方が良い）
+- プロジェクターあると良い。
+- 土日利用可
 
-- 大部屋。無料。プロジェクタも無料。
+#### 無料スペースのリンク集
+
+- 大阪だと、CA、MS、IIJさん。でも、休日利用は、小規模な勉強会だと無理みたい。
+<a href="http://www.doorkeeper.jp/%E4%BC%9A%E5%A0%B4" target="_blank">http://www.doorkeeper.jp/%E4%BC%9A%E5%A0%B4</a>
+
+- CAさん。大部屋。無料。プロジェクタも無料。
 <a href="http://caosaka.github.io/atnd.html">http://caosaka.github.io/atnd.html</a>
 
 #### コワーキングスペース往来、レンタルスペース
 
+- プロジェクタも事前に希望したら料金内で借りられる。
 <a href="http://ourai.jimdo.com/%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E5%88%A9%E7%94%A8/"
-target="_blank">http://ourai.jimdo.com/%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E5%88%A9%E7%94%A8/</a>
+target="_blank">コワーキングスペース往来、レンタルスペース</a>
 
 ### 産創館
 
@@ -29,7 +37,8 @@ target="_blank">http://ourai.jimdo.com/%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%AB%E3%8
 
 ### 靭テニスセンター地下
 
-<a href="http://www.utsubogroup.com/facilities/BH250602.pdf">http://www.utsubogroup.com/facilities/BH250602.pdf</a>
+- プロジェクタは持ち込みが必要。
+- <a href="http://www.utsubogroup.com/facilities/BH250602.pdf">http://www.utsubogroup.com/facilities/BH250602.pdf</a>
 
 ### その他
 
@@ -37,3 +46,4 @@ target="_blank">http://ourai.jimdo.com/%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%AB%E3%8
 - 公共の区民センター(安いしプロジェクタある、けど遠い)
 - 扇町メビック(プロジェクタある、けど高い)
 - THE COMMON PLACE 大阪（10名キャパだと1時間あたり1人2000円以上かかる。プロジェクタレンタルは料金に含まれる）。
+- レンタル会議室で探すとたくさん出てくるけれど、プロジェクタ対応していない部屋が多いもよう。
