@@ -4,7 +4,7 @@
  <title>kumamidori blog</title>
  <link href="http://kumamidori.github.io/" rel="self"/>
  <link href="http://kumamidori.github.io"/>
- <updated>2014-01-21T22:21:57+09:00</updated>
+ <updated>2014-02-05T23:30:21+09:00</updated>
  <id>http://kumamidori.github.io</id>
  <author>
    <name>kuma_nana</name>
@@ -592,8 +592,7 @@ Aura だと、$di-&amp;gt;get()/ $di-&amp;gt;set() で、任意のキー名を�
   &lt;li&gt;「疎結合なライブラリ」とは？&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Symfonyなどのフルスタックフレームワークは、一部のバンドルだけ取り出して使う、といったことが難しいです。
-Auraは、それができます（Library First, Framework Second、とあります）。
+&lt;p&gt;Auraのドキュメントに、「Library First, Framework Second」とあります。
 独立したパッケージの集合なので、開発者の好きなように、プロジェクト全体で使うこともできれば、
 一部だけを取り入れて使うということもできます。&lt;/p&gt;
 
