@@ -5,8 +5,8 @@
         <description>kumamidori blog - kuma_nana</description>
         <link>http://kumamidori.github.io</link>
         <link>http://kumamidori.github.io</link>
-        <lastBuildDate>2014-02-05T23:35:09+09:00</lastBuildDate>
-        <pubDate>2014-02-05T23:35:09+09:00</pubDate>
+        <lastBuildDate>2014-02-05T23:37:25+09:00</lastBuildDate>
+        <pubDate>2014-02-05T23:37:25+09:00</pubDate>
         <ttl>1800</ttl>
 
 
@@ -610,7 +610,7 @@ Aura だと、$di-&amp;gt;get()/ $di-&amp;gt;set() で、任意のキー名を�
 
 &lt;strike&gt;ちょっとしか動かせていない！ので、コードの説明は省きます。もうちょっと理解が進んだら、また別記事として書きたいところ。&lt;/strike&gt;
 
-&lt;p&gt;→ 後日ちょっと進められたので、別記事を&lt;a href=&quot;2013-12-23-auraphp-01-di&quot; target=&quot;_blank&quot;&gt;こちら&lt;/a&gt;に書きました。&lt;/p&gt;
+&lt;p&gt;→ 後日ちょっと進められたので、別記事を&lt;a href=&quot;/php/2013/12/23/auraphp-01-di&quot; target=&quot;_blank&quot;&gt;こちら&lt;/a&gt;に書きました。&lt;/p&gt;
 
 &lt;p&gt;もくもく会の当日お世話になった皆様、ありがとうございました！&lt;/p&gt;
 
