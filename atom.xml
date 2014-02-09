@@ -4,13 +4,45 @@
  <title>kumamidori blog</title>
  <link href="http://kumamidori.github.io/" rel="self"/>
  <link href="http://kumamidori.github.io"/>
- <updated>2014-02-05T23:43:02+09:00</updated>
+ <updated>2014-02-09T16:15:26+09:00</updated>
  <id>http://kumamidori.github.io</id>
  <author>
    <name>kuma_nana</name>
    <email>shigematsu.nana@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>「extract till you drop」を見た</title>
+   <link href="http://kumamidori.github.io/2014/02/09/from-extract-till-you-drop"/>
+   <updated>2014-02-09T00:00:00Z</updated>
+   <id>http://kumamidori.github.io/2014/02/09/from-extract-till-you-drop</id>
+   <content type="html">
+&lt;p&gt;今さらだけれど、extract-till-you-drop（「限界まで抽出せよ」） の screencast を見た。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://verraes.net/2013/09/extract-till-you-drop/&quot;&gt;extract-till-you-drop&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;最後は、コードが自然言語みたい。
+抽象でわかりやすく。
+知識をまとめるとシンプルに。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://phpmentors.jp/post/63422732564/symfony-meetup-tokyo&quot;&gt;道場生レポートブログ&lt;/a&gt;も読みました。&lt;/p&gt;
+
+&lt;p&gt;私もPHPStorm使っているのに、無知過ぎたので、反省メモ。。。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;phpunit、コンソール（手 or grunt-phpunit）で見ていたけれど、エディタも試してみる。エディタでカバレッジも見れるんだ・・・。&lt;/li&gt;
+  &lt;li&gt;Ctrl + T は [Rename] 以外も便利(namespace、定数、メソッド、シグネチャ）&lt;/li&gt;
+  &lt;li&gt;Overrideメソッドは、 Cmd + N -&amp;gt; Override… でインクリメンタル検索すると1秒で&lt;/li&gt;
+  &lt;li&gt;ワード選択後に [Alt] + [Enter] -&amp;gt; [Add field]、[Add import] で自動挿入。&lt;/li&gt;
+  &lt;li&gt;Cmd + Shift + T でテストクラス作成&lt;/li&gt;
+  &lt;li&gt;Ctrl + N でphpunitテストメソッド追加もできる&lt;/li&gt;
+  &lt;li&gt;一括インデントは [Reformat Code] で&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;英語が全然分からなかったけれど、モックtestについて、 small and fast だと言っていた。&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>はじめてのSymfony2 - 2.4でファイルアップロード -</title>
