@@ -5,13 +5,13 @@
         <description>kumamidori blog - kuma_nana</description>
         <link>http://kumamidori.github.io</link>
         <link>http://kumamidori.github.io</link>
-        <lastBuildDate>2014-02-09T16:15:26+09:00</lastBuildDate>
-        <pubDate>2014-02-09T16:15:26+09:00</pubDate>
+        <lastBuildDate>2014-04-09T00:41:20+09:00</lastBuildDate>
+        <pubDate>2014-04-09T00:41:20+09:00</pubDate>
         <ttl>1800</ttl>
 
 
         <item>
-                <title>「extract till you drop」を見た</title>
+                <title>「extract till you drop」/PHPStormショートカット</title>
                 <description>
 &lt;p&gt;今さらだけれど、extract-till-you-drop（「限界まで抽出せよ」） の screencast を見た。&lt;/p&gt;
 
@@ -580,7 +580,7 @@ Aura だと、$di-&amp;gt;get()/ $di-&amp;gt;set() で、任意のキー名を�
     &lt;p&gt;&lt;a href=&quot;https://twitter.com/ktz_alias/status/416426298018238464&quot; target=&quot;_blank&quot;&gt;@ktz_alias さんより：@kuma_nana さっきRTで流れてきたので、亀レスになりますが、疑問点のtraitかDIかについて。どちらも依存を解決する手法で、乱暴に分類すると、traitは静的解決。DIは動的（実行時）解決。&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://twitter.com/ktz_alias/status/416426966330245120&quot; target=&quot;_blank&quot;&gt;たとえばデータベース接続。開発用、単体テスト用、結合テスト用などで使い分けようとすると、接続先をど意的に解決する必要が出てきます。この用途にはDIが適しているでしょう。&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://twitter.com/ktz_alias/status/416426966330245120&quot; target=&quot;_blank&quot;&gt;たとえばデータベース接続。開発用、単体テスト用、結合テスト用などで使い分けようとすると、接続先を動的に解決する必要が出てきます。この用途にはDIが適しているでしょう。&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;&lt;a href=&quot;https://twitter.com/ktz_alias/status/416427188791934976&quot; target=&quot;_blank&quot;&gt;一方、貨物を輸送するというコンテキストは、貨物と輸送ロールが静的に結びついているため、traitが適していると思います。&lt;/a&gt;&lt;/p&gt;
@@ -677,7 +677,17 @@ Aura だと、$di-&amp;gt;get()/ $di-&amp;gt;set() で、任意のキー名を�
   &lt;li&gt;土日利用可&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h4 id=&quot;section&quot;&gt;無料スペースのリンク集&lt;/h4&gt;
+&lt;h4 id=&quot;section&quot;&gt;大阪市立市民交流センター&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.skc-higashiyodogawa.jp/html/chinshitu.html&quot;&gt;市民交流センターひがしよどがわ&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Ruby関西で使ったことがあると聞いて。安くてプロジェクタもあるのが良い。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;無料スペースのリンク集&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -690,28 +700,28 @@ Aura だと、$di-&amp;gt;get()/ $di-&amp;gt;set() で、任意のキー名を�
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h4 id=&quot;section-1&quot;&gt;コワーキングスペース往来、レンタルスペース&lt;/h4&gt;
+&lt;h4 id=&quot;section-2&quot;&gt;コワーキングスペース往来、レンタルスペース&lt;/h4&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;プロジェクタも事前に希望したら料金内で借りられる。
+  &lt;li&gt;プロジェクタも事前に希望したら料金内で借りられる。10人以内ならば良いと思う。和室で好き。
 &lt;a href=&quot;http://ourai.jimdo.com/%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E5%88%A9%E7%94%A8/&quot; target=&quot;_blank&quot;&gt;コワーキングスペース往来、レンタルスペース&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;section-2&quot;&gt;産創館&lt;/h3&gt;
+&lt;h3 id=&quot;section-3&quot;&gt;産創館&lt;/h3&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;小部屋もあり。けっこう前から予約しないとダメらしい。
+  &lt;li&gt;小部屋もあり。けっこう前から予約しないとダメだし、手続きもめんどうくさい&amp;gt;&amp;lt;
 &lt;a href=&quot;http://shisetsu.sansokan.jp/&quot;&gt;http://shisetsu.sansokan.jp/&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;section-3&quot;&gt;靭テニスセンター地下&lt;/h3&gt;
+&lt;h3 id=&quot;section-4&quot;&gt;靭テニスセンター地下&lt;/h3&gt;
 
 &lt;ul&gt;
   &lt;li&gt;プロジェクタは持ち込みが必要。&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://www.utsubogroup.com/facilities/BH250602.pdf&quot;&gt;http://www.utsubogroup.com/facilities/BH250602.pdf&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;section-4&quot;&gt;その他&lt;/h3&gt;
+&lt;h3 id=&quot;section-5&quot;&gt;その他&lt;/h3&gt;
 
 &lt;ul&gt;
   &lt;li&gt;オオサカンスペース(魅力的だけど、会議室ではない。オープンスペースでも良い人ならOK。)&lt;/li&gt;
