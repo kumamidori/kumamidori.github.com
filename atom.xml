@@ -4,13 +4,79 @@
  <title>kumamidori blog</title>
  <link href="http://kumamidori.github.io/" rel="self"/>
  <link href="http://kumamidori.github.io"/>
- <updated>2014-04-09T00:41:20+09:00</updated>
+ <updated>2014-04-20T10:44:03+09:00</updated>
  <id>http://kumamidori.github.io</id>
  <author>
    <name>kuma_nana</name>
    <email>shigematsu.nana@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>大阪DDD読書会vol.5振り返り</title>
+   <link href="http://kumamidori.github.io/2014/04/19/ddd_osaka_vol5"/>
+   <updated>2014-04-19T00:00:00Z</updated>
+   <id>http://kumamidori.github.io/2014/04/19/ddd_osaka_vol5</id>
+   <content type="html">
+&lt;p&gt;4/19に大阪DDD読書会vol.5を行いました。内容については、どこかで別途書きたいと思います。
+2/22に初回を行ったこの読書会、次回でいったん一区切り（最終回）となるのでした。全体を通して、スタッフとしての振り返りをメモします。&lt;/p&gt;
+
+&lt;h2 id=&quot;keep&quot;&gt;Keep&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;着実に理解しながら読んでいく、というスタイルが良かった&lt;/li&gt;
+  &lt;li&gt;ある程度参加メンバーが固定化されていることにより、落ち着いて議論が深められた&lt;/li&gt;
+  &lt;li&gt;レポートWikiを復習に活用させてもらった&lt;/li&gt;
+  &lt;li&gt;定期的に継続開催することで集中できた&lt;/li&gt;
+  &lt;li&gt;参加可能な人数は最大20人程度&lt;/li&gt;
+  &lt;li&gt;運営を私がやったことにより、自分のやりたい形でやらせて頂くことができた（カジュアルトーク枠で発表をしたり）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;個人的に良かったこと&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;（後藤さん懇親会があったことがきっかけで、）渡辺幸三さんの本「&lt;a href=&quot;http://www.amazon.co.jp/%E6%A5%AD%E5%8B%99%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%83%A2%E3%83%87%E3%83%AA%E3%83%B3%E3%82%B0%E7%B7%B4%E7%BF%92%E5%B8%B3-%E6%A5%AD%E5%8B%99%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%82%92%E5%8A%B9%E6%9E%9C%E7%9A%84%E3%81%AB%E8%A8%AD%E8%A8%88%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AE%E7%B2%BE%E9%81%B845%E9%A1%8C-%E6%B8%A1%E8%BE%BA-%E5%B9%B8%E4%B8%89/dp/4822282856&quot;&gt;業務システムモデリング練習帳&lt;/a&gt;」に取り組めた&lt;/li&gt;
+  &lt;li&gt;会社で日々やっている要件ヒアリングや名前付けの作業が以前よりも改善できた（ドメインとそうでないものを分けて考える、ドメインモデリングと実装）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;problem&quot;&gt;Problem&lt;/h2&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;運営のこと&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;会場調整に苦しんだ（産創館の空き枠が少ないことによる）&lt;/li&gt;
+  &lt;li&gt;会場手配や予習を考えて、開催ペースを落としたい&lt;/li&gt;
+  &lt;li&gt;プロジェクタとネットにつながるノート1台は毎回あった方が良い&lt;/li&gt;
+  &lt;li&gt;会計記録はWikiではなくて表形式でつけた方が良かった&lt;/li&gt;
+  &lt;li&gt;開催告知は、数回分先まで済ませてしまう方がスムーズかも&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;個人的なこと&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;【重要】予習をできていない回がたびたびあった（初学者の場合はやる意味が半減してしまうのでもったいなかった）&lt;/li&gt;
+  &lt;li&gt;質問したり議論に参加したりができていなかった（これも理解度の問題）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;try&quot;&gt;Try&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;（案）レポートWikiを事後に作るのではなくて、事前に予習から使う。不明点や調べたことを誰でも自由に書く欄を作る。疑問はディスカッション時に各自解決するようにする。&lt;/li&gt;
+  &lt;li&gt;今後やりたいことのメモ：ワークショップ、メンターズ道場でやったことを実装まで進めて共有等。&lt;/li&gt;
+  &lt;li&gt;新シリーズ企画（当初第6回までおしまい、という約束で最初に始めたので、いったん終了、解散にして、DDD読書を新メンバーで続ける）。&lt;/li&gt;
+  &lt;li&gt;参加者数名で振り返りMTGをして、新シリーズに活かす（ただいま日程調整中）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;運営面&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;会場は、安くてほど良い &lt;a href=&quot;市民交流センターひがしよどがわ&quot;&gt;市民交流センターひがしよどがわ&lt;/a&gt; を最近見つけたので、悩みが一気に解決した&lt;/li&gt;
+  &lt;li&gt;スタッフ業（会場手配、告知）の一部分担を川辺さんへご相談する&lt;/li&gt;
+  &lt;li&gt;会計記録をGoogleドライブへ移行&lt;/li&gt;
+  &lt;li&gt;プロジェクタは使わなくても毎回用意することにする&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>「extract till you drop」/PHPStormショートカット</title>
