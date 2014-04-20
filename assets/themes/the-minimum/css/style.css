@@ -375,7 +375,8 @@ pre {
   margin-left: 16px;
 }
 .unit-article .date-publish {
-  margin-bottom: 0;
+  margin-bottom: 16px;
+  font-weight: bold;
 }
 .unit-article .list-linear .list-head {
   margin-right: 4px;
