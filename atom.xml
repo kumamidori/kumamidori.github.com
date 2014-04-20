@@ -4,7 +4,7 @@
  <title>kumamidori blog</title>
  <link href="http://kumamidori.github.io/" rel="self"/>
  <link href="http://kumamidori.github.io"/>
- <updated>2014-04-20T10:44:03+09:00</updated>
+ <updated>2014-04-20T10:58:23+09:00</updated>
  <id>http://kumamidori.github.io</id>
  <author>
    <name>kuma_nana</name>
@@ -14,12 +14,13 @@
  
  <entry>
    <title>大阪DDD読書会vol.5振り返り</title>
-   <link href="http://kumamidori.github.io/2014/04/19/ddd_osaka_vol5"/>
+   <link href="http://kumamidori.github.io/ddd/2014/04/19/ddd_osaka_vol5"/>
    <updated>2014-04-19T00:00:00Z</updated>
-   <id>http://kumamidori.github.io/2014/04/19/ddd_osaka_vol5</id>
+   <id>http://kumamidori.github.io/ddd/2014/04/19/ddd_osaka_vol5</id>
    <content type="html">
 &lt;p&gt;4/19に大阪DDD読書会vol.5を行いました。内容については、どこかで別途書きたいと思います。
-2/22に初回を行ったこの読書会、次回でいったん一区切り（最終回）となるのでした。全体を通して、スタッフとしての振り返りをメモします。&lt;/p&gt;
+（今回の公式レポートWikiは @sugimoto_key さんがまとめて下さいました。&lt;a href=&quot;https://github.com/dddosaka/reading_ddd_report/wiki/vol5_20140419&quot;&gt;こちら&lt;/a&gt;です）。
+2/22に初回を行ったこの読書会、次回でいったん一区切りとなるのでした。全体を通して、スタッフとしての振り返りをメモします。&lt;/p&gt;
 
 &lt;h2 id=&quot;keep&quot;&gt;Keep&lt;/h2&gt;
 
@@ -63,7 +64,7 @@
 &lt;ul&gt;
   &lt;li&gt;（案）レポートWikiを事後に作るのではなくて、事前に予習から使う。不明点や調べたことを誰でも自由に書く欄を作る。疑問はディスカッション時に各自解決するようにする。&lt;/li&gt;
   &lt;li&gt;今後やりたいことのメモ：ワークショップ、メンターズ道場でやったことを実装まで進めて共有等。&lt;/li&gt;
-  &lt;li&gt;新シリーズ企画（当初第6回までおしまい、という約束で最初に始めたので、いったん終了、解散にして、DDD読書を新メンバーで続ける）。&lt;/li&gt;
+  &lt;li&gt;新シリーズ企画（当初第6回までおしまい、という約束で最初に始めたので、いったん終了、解散にして、DDD本読書の続きを、残る人と新メンバーで引き続きやる）。&lt;/li&gt;
   &lt;li&gt;参加者数名で振り返りMTGをして、新シリーズに活かす（ただいま日程調整中）&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -79,10 +80,10 @@
  </entry>
  
  <entry>
-   <title>「extract till you drop」/PHPStormショートカット</title>
-   <link href="http://kumamidori.github.io/2014/02/09/from-extract-till-you-drop"/>
+   <title>「extract till you drop」/PhpStormショートカット</title>
+   <link href="http://kumamidori.github.io/php/2014/02/09/from-extract-till-you-drop"/>
    <updated>2014-02-09T00:00:00Z</updated>
-   <id>http://kumamidori.github.io/2014/02/09/from-extract-till-you-drop</id>
+   <id>http://kumamidori.github.io/php/2014/02/09/from-extract-till-you-drop</id>
    <content type="html">
 &lt;p&gt;今さらだけれど、extract-till-you-drop（「限界まで抽出せよ」） の screencast を見た。&lt;/p&gt;
 
@@ -94,7 +95,7 @@
 
 &lt;p&gt;&lt;a href=&quot;http://phpmentors.jp/post/63422732564/symfony-meetup-tokyo&quot;&gt;道場生レポートブログ&lt;/a&gt;も読みました。&lt;/p&gt;
 
-&lt;p&gt;私もPHPStorm使っているのに、無知過ぎたので、反省メモ。。。&lt;/p&gt;
+&lt;p&gt;私もPhpStorm使っているのに、無知過ぎたので、反省メモ。。。&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;phpunit、コンソール（手 or grunt-phpunit）で見ていたけれど、エディタも試してみる。エディタでカバレッジも見れるんだ・・・。&lt;/li&gt;
