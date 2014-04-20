@@ -1,8 +1,9 @@
 ---
 layout: post
-title: "「extract till you drop」を見た"
+title: "「extract till you drop」/PhpStormショートカット"
 description: ""
 date: 2014-02-09 00:00:00
+category: "php"
 tags:
 - php
 - ddd
@@ -19,7 +20,7 @@ tags:
 
 [道場生レポートブログ](http://phpmentors.jp/post/63422732564/symfony-meetup-tokyo)も読みました。
 
-私もPHPStorm使っているのに、無知過ぎたので、反省メモ。。。
+私もPhpStorm使っているのに、無知過ぎたので、反省メモ。。。
 
 - phpunit、コンソール（手 or grunt-phpunit）で見ていたけれど、エディタも試してみる。エディタでカバレッジも見れるんだ・・・。
 - Ctrl + T は [Rename] 以外も便利(namespace、定数、メソッド、シグネチャ）
