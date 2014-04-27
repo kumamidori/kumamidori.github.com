@@ -8,6 +8,7 @@ http://kumamidori.github.io/rss.xml
 http://kumamidori.github.io/sitemap.txt
 http://kumamidori.github.io/tags.html
 
+http://kumamidori.github.io/ddd/2014/04/27/ddd_osaka_vol5_modeling
 http://kumamidori.github.io/ddd/2014/04/19/ddd_osaka_vol5
 http://kumamidori.github.io/php/2014/02/09/from-extract-till-you-drop
 http://kumamidori.github.io/php/2014/01/02/symfony-01-basic

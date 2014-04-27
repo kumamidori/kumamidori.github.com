@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7 ie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8 ie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9 ie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>大阪DDD読書会vol.5、「モデル駆動設計」前半、参加ログ</title>
+	<meta name="author" content="kuma_nana">
+	<link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
+	<link href="http://feeds.feedburner.com/" rel="alternate" title="大阪DDD読書会vol.5、「モデル駆動設計」前半、参加ログ" type="application/atom+xml">
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
+</head>
+<body>
+
+<div id="page" class="hentry">
+	<header class="the-header">
+		<div class="unit-head">
+			<div class="unit-inner unit-head-inner">
+				<p class="logo"><a href="/">kumamidori blog</a></p>
+				<nav class="nav-global">
+					<ul>
+						<li class="archive"><a href="/archive.html">archive</a></li>
+						<li class="page"><a href="/pages.html">pages</a></li>
+						<li class="category"><a href="/categories.html">categories</a></li>
+						<li class="tag"><a href="/tags.html">tags</a></li>
+					</ul>
+				</nav>
+			</div><!-- unit-inner -->
+		</div><!-- unit-head -->
+	</header>
+	<div class="body" role="main">
+		<div class="unit-body">
+			<div class="unit-inner unit-body-inner">
+				<div class="entry-content">
+					
+<article class="unit-article layout-post">
+	<div class="unit-inner unit-article-inner">
+		<div class="content">
+			<header>
+				<div class="unit-head">
+					<div class="unit-inner unit-head-inner">
+						<h1 class="h2 entry-title">大阪DDD読書会vol.5、「モデル駆動設計」前半、参加ログ</h1>
+					</div><!-- unit-inner -->
+				</div><!-- unit-head -->
+			</header>
+
+			<div class="bd">
+				<div class="entry-content">
+                    <div class="meta">
+                        <p class="date-publish">
+                            <date class="date-pub" title="2014-04-27T00:00:00Z" datetime="2014-04-27T00:00:00Z" pubdate>
+                                <span>2014-04-27</span>
+                            </date>
+                        </p>
+                    </div><!-- meta -->
+					
+<p>4/19に大阪DDD読書会vol.5で、第2章「コミュニケーションと言語の使い方」後半から第3章「モデルと実装を結びつける」の前半まで読みました。
+（公式レポートWikiは<a href="https://github.com/dddosaka/reading_ddd_report/wiki/vol5_20140419">こちら</a>）。</p>
+
+<p>感想やメモを箇条書きでつらつらと書いていきます。</p>
+
+<h3 id="section">モデル駆動設計について</h3>
+
+<h4 id="section-1">「モデルを使っていく」とはどういうことか？</h4>
+
+<p>本の中で</p>
+
+<blockquote>
+  <p>荷受け地や荷出し地などがあって、これらを全部[経路選択サービス]に与えると、
+必要なものがすべて揃った[輸送日程]が戻ってくる。</p>
+</blockquote>
+
+<p>という説明と</p>
+
+<blockquote>
+  <p>[経路選択サービス]は、[経路仕様]を満たしている[輸送日程]を見つける。</p>
+</blockquote>
+
+<p>という表現を比べて、後者が簡潔だ、という話が出てきます。</p>
+
+<p>モデリング作業として、実際にテストコードを書いて実行してみるまでもなく、ただ言葉にしてみるだけで、ある程度試していくことができるわけです。「モデル駆動設計」という言葉の響きは難しく聞こえるけれど、想像していたよりもずっと簡単なことを言っている？</p>
+
+<h3 id="section-2">ユビキタス言語、ドメインモデル、コードを結びつけるアプローチとして、既存で近いことができるツールには何があるか？</h3>
+
+<p>「手で用語集やモデル図を直すなんて、やってられない。ツールを使うことになるのでは」という話です。</p>
+
+<h4 id="section-3">コードからのドキュメント生成</h4>
+
+<p>昔からある。たとえばコメントからドキュメントを生成するJavaDocのようなもの。</p>
+
+<p>例として、PHPメンターズさんの公開されている
+<a href="http://phpmentors.jp/post/54317035667/symfony2-ddd-specification-sample" target="_blank">「Symfony2 ベースのサンプル」</a>から<a href="http://apigen.org/" target="_blank">ApiGen</a>で生成したサンプルを貼ります。</p>
+
+<p><img src="https://www.dropbox.com/s/wd5fu1n9gogx7af/Screenshot%202014-04-27%2018.28.08.png" size="300" /></p>
+
+<p>※日本語の部分は私が追記したコメントです。</p>
+
+<p>（関係ないけれど、apigen、PEARでインストールしたら、そのままだと動かなかった。
+手でエラーになる箇所のincludeパスを書き換えてやるか、composer install して使うかすればOKだった）。</p>
+
+<p>ビルド系ツール（Grunt、Jenkins等）で自動生成させれば、手間なく吐けます。</p>
+
+<h4 id="uml">UML的なもの</h4>
+
+<p><a href="http://www.infoq.com/jp/articles/kenji-modeling-agile" target="_blank">平鍋さんのアジャイルモデリングの記事</a>に活用イメージが紹介されています。</p>
+
+<p>※「php uml 自動生成」でぐぐって、<a href="http://www.stack.nl/~dimitri/doxygen" target="_blank">doxygen</a>を試してみたのですが、継承等はUML生成されるのですが、あるメソッドが別のクラスのオブジェクトを引数に取る、といった情報についての図示ができるツールではありませんでした。</p>
+
+<h3 id="section-4">「ドメイン」、「モデル」という用語について</h3>
+
+<p>3章の内容とは直接関係無いのですが、自分の中で混乱していた用語がやっと整理できたような気がするので以下にメモ。</p>
+
+<h4 id="ddd">ユーザが見ても理解可能なコアドメインのモデルと、そうではない、コアではない、「実装のためのモデル」とがある。DDD本では後者は扱っていないのか？</h4>
+
+<p><small>
+（読書会を始めた当初の時期、私が会社で作っていたのは、
+スケールを前提条件とした分散トランザクションの処理だった。
+それは、ユーザ（ディレクタ = ドメインエキスパート）から見れば「ひとこと」であっさりと言えてしまう単純な機能であるにも関わらず、
+裏側は非同期（メッセージキューイング）で、そこそこ複雑な構成のクラス群。
+これは、DDD本で言うとどのあたりの話になるのかなと、気になっていた）。
+</small></p>
+
+<p>ユーザが見ても理解可能なコアドメインのモデルは、「問題ドメインのモデル」で、私のイメージしている実装のためのモデルは、そうではなくて、「解決ドメインのモデル」と言えそう。
+モデルは、見方によって、そこかしこに存在している。この本が主題にしているのは、問題ドメインのモデルと思う。</p>
+
+<p>“ユーザ（ディレクタ）から見れば「ひとこと」であっさりと言えてしまう”のであれば、
+実装コード上も、そのまま「ひとこと」で済んでいるだけのI/Fが、ドメイン層のどこかに表現される。
+スケールのための裏側のごちゃごちゃとした実装の仕掛け群については、オブジェクト指向の責務分割によって、別のクラスやパッケージに切り出す。
+これによって、たとえば保守を担当することになった他のエンジニアが後から見ても、意味が把握できるシステムになる、という理解で良いのかなと思いました（自信なし）。</p>
+
+<p>以上とは全く別な話として、「問題ドメイン」には、「ビジネスドメイン」と「技術ドメイン」とがある。
+技術ドメインとして、思いつく例を挙げる。</p>
+
+<ul>
+  <li>Webアプリケーションフレームワークそのものを作っているエンジニアから見たWebアプリケーション</li>
+  <li>メッセージキューイングシステムそのものを作っているライブラリ作者から見たメッセージキューイング</li>
+</ul>
+
+<p>Webチャットのように、リアルなモノではなく、電子データのやり取りが中心となるようなコンピュータドメインもある。</p>
+
+<h4 id="xead-modeler">話は変わって、設計支援ツール「XEAD Modeler」をインストールしてみるところまでの話</h4>
+
+<p>ところで、最近「<a href="http://www.amazon.co.jp/%E6%A5%AD%E5%8B%99%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%83%A2%E3%83%87%E3%83%AA%E3%83%B3%E3%82%B0%E7%B7%B4%E7%BF%92%E5%B8%B3-%E6%A5%AD%E5%8B%99%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%82%92%E5%8A%B9%E6%9E%9C%E7%9A%84%E3%81%AB%E8%A8%AD%E8%A8%88%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AE%E7%B2%BE%E9%81%B845%E9%A1%8C-%E6%B8%A1%E8%BE%BA-%E5%B9%B8%E4%B8%89/dp/4822282856" target="_blank">業務システムモデリング練習帳</a>」を読んでいます。後半になってくると、私には難しくて、なかなか読破できません、笑。エンタープライズ向けの本ですが、Web系PHPerが読んでもおもしろい、実践的なトレーニングブック。モデル図もたくさん出てきます。</p>
+
+<p>読書会では、著者の渡辺幸三さんの話題がたびたび出てくるので、読んでみたくなったのでした。</p>
+
+<p>渡辺さんが作られている設計支援ツール、<a href="http://homepage2.nifty.com/dbc/products.html" target="_blank">XEAD Modeler</a> を Mac で動かして、販売管理のサンプルデータを開いて、おおっ、なんか凄い！と思ったりしました。
+まだ記事に書けるほどの理解ができていないので、今後学習していきたいと思います。
+（Macだと、右クリックのイベントが拾えていないような気がします。私の使い方が間違っているのだろうか）。</p>
+
+<ul>
+  <li>XEAD Modeler をMac で動かす手順メモ</li>
+</ul>
+
+<blockquote>
+  <p>Modeler.javaと
+Res_ja.java
+に日本語があるのであらかじめUTF-8に変換しておく。</p>
+
+  <p>EclipseでJavaプロジェクトを作成してインポートする。</p>
+
+  <p>poi-3.10-FINAL-20140208.jar
+xerces-2_10_0-xml-schema-1.1-beta
+jaxp-ri-1.4.jar</p>
+
+  <p>をWebから落としてきて、プロジェクトに追加し、右クリックでビルドパスを追加設定。
+[Javaアプリケーション]として実行。
+```</p>
+</blockquote>
+
+<p>OSSなので、PullRequest もしてみました。面識のないフランス人にプルリクした時と同じくらい緊張しました。</p>
+
+				</div><!-- entry-content -->
+			</div><!-- bd -->
+			<footer class="unit-foot">
+				<div class="unit-inner unit-foot-inner">
+					<nav class="pagination">
+						<ul>
+							
+							<li class="prev"><a class="internal" rel="prev"  href="/ddd/2014/04/19/ddd_osaka_vol5" title="View 大阪DDD読書会vol.5振り返り">&laquo; 大阪DDD読書会vol.5振り返り</a></li>
+							
+							
+							
+						</ul>
+					</nav>
+					<p class="gotop">
+						<a href="#page">Back to Top</a>
+					</p>
+				</div>
+			</footer>
+
+		</div><!-- content -->
+	</div><!-- unit-inner -->
+</article>
+
+
+				</div>
+			</div><!-- unit-inner -->
+		</div><!-- unit-body -->
+	</div><!-- body -->
+	<footer class="the-footer">
+		<div class="unit-foot">
+			<div class="unit-inner unit-foot-inner">
+				<div class="misc vcard">
+					<h4 style="margin-bottom:0.5em;">about</h4>
+					<ul>
+                        <li>
+                            Web developer / 大阪 / <a href="http://phpmentors.jp/" target="_blank">PHPメンターズ道場生</a>
+                        </li>
+						<li class="github">
+                            <a href="http://github.com/kumamidori/" rel="me">github: kumamidori</a>
+                             /
+                            <a href="http://twitter.com/kuma_nana/" rel="me">twitter: kuma_nana</a>
+                        </li>
+						<li class="twitter">
+                            <span class="fn email">shigematsu.nana@gmail.com
+                        </li>
+					</ul>
+				</div><!-- misc -->
+				<p class="licence">
+					Theme: <a href="http://layouts-the.me">the_minimum</a> based on <a href="http://jekyllbootstrap.com/">Jekyll-bootstrap</a>.
+					Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a>.
+				</p>
+			</div><!-- unit-foot-inner -->
+		</div><!-- unit-foot -->
+	</footer>
+</div><!-- page -->
+<script>
+	(function(d, s) {
+		var js, fjs = d.getElementsByTagName(s)[0], load = function(url, id) {
+		if (d.getElementById(id)) {return;}
+		js = d.createElement(s); js.src = url; js.id = id;
+		fjs.parentNode.insertBefore(js, fjs);
+		};
+	load('//platform.twitter.com/widgets.js', 'tweetjs');
+	// load('https://apis.google.com/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
+	// load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/ddd/2014/04/27/ddd_osaka_vol5_modeling" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+	}(document, 'script'));
+</script>
+<script>
+/*! A fix for the iOS orientationchange zoom bug.Script by @scottjehl, rebound by @wilto. MIT License.*/
+(function(j){var i=j.document;if(!i.querySelectorAll){return}var l=i.querySelectorAll("meta[name=viewport]")[0],a=l&&l.getAttribute("content"),h=a+", maximum-scale=1.0",d=a+", maximum-scale=10.0",g=true,c=j.orientation,k=0;if(!l){return}function f(){l.setAttribute("content",d);g=true}function b(){l.setAttribute("content",h);g=false}function e(m){c=Math.abs(j.orientation);k=Math.abs(m.gamma);if(k>8&&c===0){if(g){b()}}else{if(!g){f()}}}j.addEventListener("orientationchange",f,false);j.addEventListener("deviceorientation",e,false)})(this);
+</script>
+
+  
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1823802-5']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+</body>
+</html>
+
