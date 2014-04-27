@@ -105,6 +105,9 @@ Webチャットのように、リアルなモノではなく、電子データ�
 
 - XEAD Modeler をMac で動かす手順メモ
 
+> https://github.com/xead/XeadModeler
+> を git clone する。
+> 
 > Modeler.javaと
 > Res_ja.java
 > に日本語があるのであらかじめUTF-8に変換しておく。
