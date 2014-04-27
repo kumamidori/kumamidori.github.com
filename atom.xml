@@ -4,7 +4,7 @@
  <title>kumamidori blog</title>
  <link href="http://kumamidori.github.io/" rel="self"/>
  <link href="http://kumamidori.github.io"/>
- <updated>2014-04-27T21:54:49+09:00</updated>
+ <updated>2014-04-27T21:58:49+09:00</updated>
  <id>http://kumamidori.github.io</id>
  <author>
    <name>kuma_nana</name>
@@ -117,6 +117,9 @@
 &lt;/ul&gt;
 
 &lt;blockquote&gt;
+  &lt;p&gt;https://github.com/xead/XeadModeler
+を git clone する。&lt;/p&gt;
+
   &lt;p&gt;Modeler.javaと
 Res_ja.java
 に日本語があるのであらかじめUTF-8に変換しておく。&lt;/p&gt;
