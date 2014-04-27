@@ -44,7 +44,7 @@ tags:
 例として、PHPメンターズさんの公開されている
 <a href="http://phpmentors.jp/post/54317035667/symfony2-ddd-specification-sample" target="_blank">「Symfony2 ベースのサンプル」</a>から<a href="http://apigen.org/" target="_blank">ApiGen</a>で生成したサンプルを貼ります。
 
-<img src="https://www.dropbox.com/s/wd5fu1n9gogx7af/Screenshot%202014-04-27%2018.28.08.png" size="300" />
+<img src="/assets/images/201404/apigen_sample.png" size="300" />
 
 ※日本語の部分は私が追記したコメントです。
 
@@ -117,6 +117,6 @@ Webチャットのように、リアルなモノではなく、電子データ�
 > 
 > をWebから落としてきて、プロジェクトに追加し、右クリックでビルドパスを追加設定。
 > [Javaアプリケーション]として実行。
-```
+
 
 OSSなので、PullRequest もしてみました。面識のないフランス人にプルリクした時と同じくらい緊張しました。
