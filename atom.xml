@@ -4,7 +4,7 @@
  <title>kumamidori blog</title>
  <link href="http://kumamidori.github.io/" rel="self"/>
  <link href="http://kumamidori.github.io"/>
- <updated>2014-04-27T21:33:36+09:00</updated>
+ <updated>2014-04-27T21:43:41+09:00</updated>
  <id>http://kumamidori.github.io</id>
  <author>
    <name>kuma_nana</name>
@@ -13,7 +13,7 @@
 
  
  <entry>
-   <title>大阪DDD読書会vol.5、「モデル駆動設計」前半、参加ログ</title>
+   <title>大阪DDD読書会vol.5、「モデル駆動設計」前半、復習メモ</title>
    <link href="http://kumamidori.github.io/ddd/2014/04/27/ddd_osaka_vol5_modeling"/>
    <updated>2014-04-27T00:00:00Z</updated>
    <id>http://kumamidori.github.io/ddd/2014/04/27/ddd_osaka_vol5_modeling</id>
@@ -21,7 +21,7 @@
 &lt;p&gt;4/19に大阪DDD読書会vol.5で、第2章「コミュニケーションと言語の使い方」後半から第3章「モデルと実装を結びつける」の前半まで読みました。
 （公式レポートWikiは&lt;a href=&quot;https://github.com/dddosaka/reading_ddd_report/wiki/vol5_20140419&quot;&gt;こちら&lt;/a&gt;）。&lt;/p&gt;
 
-&lt;p&gt;感想やメモを箇条書きでつらつらと書いていきます。&lt;/p&gt;
+&lt;p&gt;感想や復習メモをつらつらと書いていきます。&lt;/p&gt;
 
 &lt;h3 id=&quot;section&quot;&gt;モデル駆動設計について&lt;/h3&gt;
 
@@ -52,10 +52,10 @@
 
 &lt;p&gt;昔からある。たとえばコメントからドキュメントを生成するJavaDocのようなもの。&lt;/p&gt;
 
-&lt;p&gt;例として、PHPメンターズさんの公開されている
-&lt;a href=&quot;http://phpmentors.jp/post/54317035667/symfony2-ddd-specification-sample&quot; target=&quot;_blank&quot;&gt;「Symfony2 ベースのサンプル」&lt;/a&gt;から&lt;a href=&quot;http://apigen.org/&quot; target=&quot;_blank&quot;&gt;ApiGen&lt;/a&gt;で生成したサンプルを貼ります。&lt;/p&gt;
+&lt;p&gt;イメージが沸きにくかったので、PHPメンターズさんの公開されている
+&lt;a href=&quot;http://phpmentors.jp/post/54317035667/symfony2-ddd-specification-sample&quot; target=&quot;_blank&quot;&gt;「Symfony2 ベースのサンプル」&lt;/a&gt;をお借りしてきて、&lt;a href=&quot;http://apigen.org/&quot; target=&quot;_blank&quot;&gt;ApiGen&lt;/a&gt;で、サンプルを生成してみました。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/201404/apigen_sample.png&quot; size=&quot;300&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/201404/apigen_sample.png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;※日本語の部分は私が追記したコメントです。&lt;/p&gt;
 
@@ -131,7 +131,7 @@ jaxp-ri-1.4.jar&lt;/p&gt;
 [Javaアプリケーション]として実行。&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;OSSなので、PullRequest もしてみました。面識のないフランス人にプルリクした時と同じくらい緊張しました。&lt;/p&gt;
+&lt;p&gt;OSSなので、&lt;a href=&quot;https://github.com/xead/XeadModeler/pull/1&quot; target=&quot;_blank&quot;&gt;PullRequest&lt;/a&gt;もしました。面識のないフランス人にプルリクした時と同じくらい緊張しました。&lt;/p&gt;
 </content>
  </entry>
  
