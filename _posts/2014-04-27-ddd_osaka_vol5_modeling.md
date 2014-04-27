@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "大阪DDD読書会vol.5、「モデル駆動設計」前半、参加ログ"
+title: "大阪DDD読書会vol.5、「モデル駆動設計」前半、復習メモ"
 description: ""
 date: 2014-04-27 00:00:00
 category: "ddd"
@@ -12,7 +12,7 @@ tags:
 4/19に大阪DDD読書会vol.5で、第2章「コミュニケーションと言語の使い方」後半から第3章「モデルと実装を結びつける」の前半まで読みました。
 （公式レポートWikiは[こちら](https://github.com/dddosaka/reading_ddd_report/wiki/vol5_20140419)）。
 
-感想やメモを箇条書きでつらつらと書いていきます。
+感想や復習メモをつらつらと書いていきます。
 
 ### モデル駆動設計について
 
@@ -41,10 +41,10 @@ tags:
 
 昔からある。たとえばコメントからドキュメントを生成するJavaDocのようなもの。
 
-例として、PHPメンターズさんの公開されている
-<a href="http://phpmentors.jp/post/54317035667/symfony2-ddd-specification-sample" target="_blank">「Symfony2 ベースのサンプル」</a>から<a href="http://apigen.org/" target="_blank">ApiGen</a>で生成したサンプルを貼ります。
+イメージが沸きにくかったので、PHPメンターズさんの公開されている
+<a href="http://phpmentors.jp/post/54317035667/symfony2-ddd-specification-sample" target="_blank">「Symfony2 ベースのサンプル」</a>をお借りしてきて、<a href="http://apigen.org/" target="_blank">ApiGen</a>で、サンプルを生成してみました。
 
-<img src="/assets/images/201404/apigen_sample.png" size="300" />
+<img src="/assets/images/201404/apigen_sample.png" />
 
 ※日本語の部分は私が追記したコメントです。
 
@@ -119,4 +119,4 @@ Webチャットのように、リアルなモノではなく、電子データ�
 > [Javaアプリケーション]として実行。
 
 
-OSSなので、PullRequest もしてみました。面識のないフランス人にプルリクした時と同じくらい緊張しました。
+OSSなので、<a href="https://github.com/xead/XeadModeler/pull/1" target="_blank">PullRequest</a>もしました。面識のないフランス人にプルリクした時と同じくらい緊張しました。
