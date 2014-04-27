@@ -5,8 +5,8 @@
         <description>kumamidori blog - kuma_nana</description>
         <link>http://kumamidori.github.io</link>
         <link>http://kumamidori.github.io</link>
-        <lastBuildDate>2014-04-27T21:22:20+09:00</lastBuildDate>
-        <pubDate>2014-04-27T21:22:20+09:00</pubDate>
+        <lastBuildDate>2014-04-27T21:33:36+09:00</lastBuildDate>
+        <pubDate>2014-04-27T21:33:36+09:00</pubDate>
         <ttl>1800</ttl>
 
 
@@ -50,7 +50,7 @@
 &lt;p&gt;例として、PHPメンターズさんの公開されている
 &lt;a href=&quot;http://phpmentors.jp/post/54317035667/symfony2-ddd-specification-sample&quot; target=&quot;_blank&quot;&gt;「Symfony2 ベースのサンプル」&lt;/a&gt;から&lt;a href=&quot;http://apigen.org/&quot; target=&quot;_blank&quot;&gt;ApiGen&lt;/a&gt;で生成したサンプルを貼ります。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://www.dropbox.com/s/wd5fu1n9gogx7af/Screenshot%202014-04-27%2018.28.08.png&quot; size=&quot;300&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/201404/apigen_sample.png&quot; size=&quot;300&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;※日本語の部分は私が追記したコメントです。&lt;/p&gt;
 
@@ -123,8 +123,7 @@ xerces-2_10_0-xml-schema-1.1-beta
 jaxp-ri-1.4.jar&lt;/p&gt;
 
   &lt;p&gt;をWebから落としてきて、プロジェクトに追加し、右クリックでビルドパスを追加設定。
-[Javaアプリケーション]として実行。
-```&lt;/p&gt;
+[Javaアプリケーション]として実行。&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;OSSなので、PullRequest もしてみました。面識のないフランス人にプルリクした時と同じくらい緊張しました。&lt;/p&gt;
