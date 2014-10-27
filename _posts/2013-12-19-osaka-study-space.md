@@ -18,10 +18,11 @@ tags: [diary]
 
 #### 大阪市立市民交流センター
 
-
 - [市民交流センターひがしよどがわ](http://www.skc-higashiyodogawa.jp/html/chinshitu.html)
   - Ruby関西で使ったことがあると聞いて。安くてプロジェクタもあるのが良い。
 
+- [クレオ大阪北　大阪市立男女共同参画センター](http://www.creo-osaka.or.jp/north/)
+  - 新大阪Ruby が使っていると聞いて。  
 
 
 #### 無料スペースのリンク集
