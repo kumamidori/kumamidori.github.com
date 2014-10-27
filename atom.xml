@@ -4,7 +4,7 @@
  <title>kumamidori blog</title>
  <link href="http://kumamidori.github.io/" rel="self"/>
  <link href="http://kumamidori.github.io"/>
- <updated>2014-10-28T00:10:59+09:00</updated>
+ <updated>2014-10-28T00:22:18+09:00</updated>
  <id>http://kumamidori.github.io</id>
  <author>
    <name>kuma_nana</name>
@@ -37,31 +37,130 @@
  </entry>
  
  <entry>
-   <title>DDDに関する小さな短い雑談</title>
-   <link href="http://kumamidori.github.io/ddd/2014/09/06/chat_about_ddd"/>
-   <updated>2014-09-06T00:00:00Z</updated>
-   <id>http://kumamidori.github.io/ddd/2014/09/06/chat_about_ddd</id>
+   <title>大阪DDD読書会vol.5、「モデル駆動設計」前半、復習メモ</title>
+   <link href="http://kumamidori.github.io/ddd/2014/04/27/ddd_osaka_vol5_modeling"/>
+   <updated>2014-04-27T00:00:00Z</updated>
+   <id>http://kumamidori.github.io/ddd/2014/04/27/ddd_osaka_vol5_modeling</id>
    <content type="html">
-&lt;p&gt;雑談、Twitterに書くには長いので、こちらへメモ。&lt;/p&gt;
+&lt;p&gt;4/19に大阪DDD読書会vol.5で、第2章「コミュニケーションと言語の使い方」後半から第3章「モデルと実装を結びつける」の前半まで読みました。
+（公式レポートWikiは&lt;a href=&quot;https://github.com/dddosaka/reading_ddd_report/wiki/vol5_20140419&quot;&gt;こちら&lt;/a&gt;）。&lt;/p&gt;
 
-&lt;p&gt;T：「Sさんが、DDDの実効性はどうなのか？には興味がある、と言っていたんだよね。」&lt;/p&gt;
+&lt;p&gt;感想や復習メモをつらつらと書いていきます。&lt;/p&gt;
 
-&lt;p&gt;私：「それは良い質問だね。Sさんは現場で作りまくっている人だもんね。
-たしかに、そういうことが業界的に共有されているわけじゃないよね。理念だけなんじゃないの？みたいに思われちゃうのは分かる。」&lt;/p&gt;
+&lt;h3 id=&quot;section&quot;&gt;モデル駆動設計について&lt;/h3&gt;
 
-&lt;p&gt;T：「あの本は、基本的には、エヴァンスの、”経験則” なんだよね。しかも、個人的な経験っていうのかな（笑）。
-でも、読むと、読むべきところはあるし。設計者たちは、みんな読んでいる。」&lt;/p&gt;
+&lt;h4 id=&quot;section-1&quot;&gt;「モデルを使っていく」とはどういうことか？&lt;/h4&gt;
 
-&lt;p&gt;私：「理論的な裏打ちが前面に出ている感じじゃないよね。」&lt;/p&gt;
+&lt;p&gt;本の中で&lt;/p&gt;
 
-&lt;p&gt;私：「でもさ、”DDD” っていう言葉がさ、”オブジェクト指向” と同じくらい、指している範囲が広いから、そういうこと（実効性について）議論するの、難しくない？」&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;荷受け地や荷出し地などがあって、これらを全部[経路選択サービス]に与えると、
+必要なものがすべて揃った[輸送日程]が戻ってくる。&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;T：「”DDD” は、”オブジェクト指向” よりも、もっと広いと思うよ」&lt;/p&gt;
+&lt;p&gt;という説明と&lt;/p&gt;
 
-&lt;p&gt;T：「Kくん、DDD本、買ったんだって。社内で読書会したいとか言ってた（笑）。
-もしRubyKaigiとかぶってなかったら、LT会に来たと思うよ。Sさんは今メチャクチャ忙しいからね～。難しそう。」&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;[経路選択サービス]は、[経路仕様]を満たしている[輸送日程]を見つける。&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;（ふだんは、家で仕事の話はしないけど、めずらしくちょっとだけ。）&lt;/p&gt;
+&lt;p&gt;という表現を比べて、後者が簡潔だ、という話が出てきます。&lt;/p&gt;
+
+&lt;p&gt;モデリング作業として、実際にテストコードを書いて実行してみるまでもなく、ただ言葉にしてみるだけで、ある程度試していくことができるわけです。「モデル駆動設計」という言葉の響きは難しく聞こえるけれど、想像していたよりもずっと簡単なことを言っている？&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;ユビキタス言語、ドメインモデル、コードを結びつけるアプローチとして、既存で近いことができるツールには何があるか？&lt;/h3&gt;
+
+&lt;p&gt;「手で用語集やモデル図を直すなんて、やってられない。ツールを使うことになるのでは」という話です。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;コードからのドキュメント生成&lt;/h4&gt;
+
+&lt;p&gt;昔からある。たとえばコメントからドキュメントを生成するJavaDocのようなもの。&lt;/p&gt;
+
+&lt;p&gt;イメージが沸きにくかったので、PHPメンターズさんの公開されている
+&lt;a href=&quot;http://phpmentors.jp/post/54317035667/symfony2-ddd-specification-sample&quot; target=&quot;_blank&quot;&gt;「Symfony2 ベースのサンプル」&lt;/a&gt;をお借りしてきて、&lt;a href=&quot;http://apigen.org/&quot; target=&quot;_blank&quot;&gt;ApiGen&lt;/a&gt;で、サンプルを生成してみました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/201404/apigen_sample.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;※日本語の部分は私が追記したコメントです。&lt;/p&gt;
+
+&lt;p&gt;（関係ないけれど、apigen、PEARでインストールしたら、そのままだと動かなかった。
+手でエラーになる箇所のincludeパスを書き換えてやるか、composer install して使うかすればOKだった）。&lt;/p&gt;
+
+&lt;p&gt;ビルド系ツール（Grunt、Jenkins等）で自動生成させれば、手間なく吐けます。&lt;/p&gt;
+
+&lt;h4 id=&quot;uml&quot;&gt;UML的なもの&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.infoq.com/jp/articles/kenji-modeling-agile&quot; target=&quot;_blank&quot;&gt;平鍋さんのアジャイルモデリングの記事&lt;/a&gt;に活用イメージが紹介されています。&lt;/p&gt;
+
+&lt;p&gt;※「php uml 自動生成」でぐぐって、&lt;a href=&quot;http://www.stack.nl/~dimitri/doxygen&quot; target=&quot;_blank&quot;&gt;doxygen&lt;/a&gt;を試してみたのですが、継承等はUML生成されるのですが、あるメソッドが別のクラスのオブジェクトを引数に取る、といった情報についての図示ができるツールではありませんでした。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-4&quot;&gt;「ドメイン」、「モデル」という用語について&lt;/h3&gt;
+
+&lt;p&gt;3章の内容とは直接関係無いのですが、自分の中で混乱していた用語がやっと整理できたような気がするので以下にメモ。&lt;/p&gt;
+
+&lt;h4 id=&quot;ddd&quot;&gt;ユーザが見ても理解可能なコアドメインのモデルと、そうではない、「実装のためのモデル」とがある。DDD本では後者は扱っていないのか？&lt;/h4&gt;
+
+&lt;p&gt;&lt;small&gt;
+（読書会を始めた当初の時期、私が会社で作っていたのは、
+スケールを前提条件とした分散トランザクションの処理だった。
+それは、ユーザ（ディレクタ = ドメインエキスパート）から見れば「ひとこと」であっさりと言えてしまう単純な機能であるにも関わらず、
+裏側は非同期（メッセージキューイング）で、そこそこ複雑な構成のクラス群。
+これは、DDD本で言うとどのあたりの話になるのかなと、気になっていた）。
+&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;ユーザでも理解可能なドメインモデルは、分かりやすく抽象化されているもので、私のイメージしている実装のためのモデルは、もっと具体的な、「解決ドメインのモデル」と言えそう。
+この本が主題にしているのは、前者の、問題ドメインのドメイン知識から作るドメインモデルの方だと思う（たぶん。自信無し）。&lt;/p&gt;
+
+&lt;p&gt;&lt;small&gt;
+“ユーザ（ディレクタ）から見れば「ひとこと」であっさりと言えてしまう”のであれば、
+実装コード上も、そのまま「ひとこと」で済んでいるだけのI/Fが、ドメイン層のどこかに表現される。
+スケールのための裏側のごちゃごちゃとした実装の仕掛け群については、オブジェクト指向の責務分割によって、別のクラスやパッケージに切り出す。
+これによって、たとえば保守を担当することになった他のエンジニアが後から見ても、意味が把握できるシステムになる、という理解で良いのかなと思いました（自信なし）。
+&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;以上とは全く別な話として、「問題ドメイン」には、「ビジネスドメイン」と「技術ドメイン」とがある。
+技術ドメインとして、思いつく例を挙げる。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Webアプリケーションフレームワークそのものを作っているエンジニアから見たWebアプリケーション&lt;/li&gt;
+  &lt;li&gt;メッセージキューイングシステムそのものを作っているライブラリ作者から見たメッセージキューイング&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Webチャットのように、リアルなモノではなく、電子データのやり取りが中心となるようなコンピュータドメインもある。&lt;/p&gt;
+
+&lt;h4 id=&quot;xead-modeler&quot;&gt;話は変わって、設計支援ツール「XEAD Modeler」をインストールしてみるところまでの話&lt;/h4&gt;
+
+&lt;p&gt;ところで、最近「&lt;a href=&quot;http://www.amazon.co.jp/%E6%A5%AD%E5%8B%99%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%83%A2%E3%83%87%E3%83%AA%E3%83%B3%E3%82%B0%E7%B7%B4%E7%BF%92%E5%B8%B3-%E6%A5%AD%E5%8B%99%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%82%92%E5%8A%B9%E6%9E%9C%E7%9A%84%E3%81%AB%E8%A8%AD%E8%A8%88%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AE%E7%B2%BE%E9%81%B845%E9%A1%8C-%E6%B8%A1%E8%BE%BA-%E5%B9%B8%E4%B8%89/dp/4822282856&quot; target=&quot;_blank&quot;&gt;業務システムモデリング練習帳&lt;/a&gt;」を読んでいます。後半になってくると、私には難しくて、なかなか読破できません、笑。エンタープライズ向けの本ですが、Web系PHPerが読んでもおもしろい、実践的なトレーニングブック。モデル図もたくさん出てきます。&lt;/p&gt;
+
+&lt;p&gt;読書会では、著者の渡辺幸三さんの話題がたびたび出てくるので、読んでみたくなったのでした。&lt;/p&gt;
+
+&lt;p&gt;渡辺さんが作られている設計支援ツール、&lt;a href=&quot;http://homepage2.nifty.com/dbc/products.html&quot; target=&quot;_blank&quot;&gt;XEAD Modeler&lt;/a&gt; を Mac で動かして、販売管理のサンプルデータを開いて、おおっ、なんか凄い！と思ったりしました。
+まだ記事に書けるほどの理解ができていないので、今後学習していきたいと思います。
+（Macだと、右クリックのイベントが拾えていないような気がします。私の使い方が間違っているのだろうか）。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;XEAD Modeler をMac で動かす手順メモ&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;https://github.com/xead/XeadModeler
+を git clone する。&lt;/p&gt;
+
+  &lt;p&gt;Modeler.javaと
+Res_ja.java
+に日本語があるのであらかじめUTF-8に変換しておく。&lt;/p&gt;
+
+  &lt;p&gt;EclipseでJavaプロジェクトを作成してインポートする。&lt;/p&gt;
+
+  &lt;p&gt;poi-3.10-FINAL-20140208.jar
+xerces-2_10_0-xml-schema-1.1-beta
+jaxp-ri-1.4.jar&lt;/p&gt;
+
+  &lt;p&gt;をWebから落としてきて、プロジェクトに追加し、右クリックでビルドパスを追加設定。
+[Javaアプリケーション]として実行。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;OSSなので、&lt;a href=&quot;https://github.com/xead/XeadModeler/pull/1&quot; target=&quot;_blank&quot;&gt;PullRequest&lt;/a&gt;もしました。面識のないフランス人にプルリクした時と同じくらい緊張しました。&lt;/p&gt;
 </content>
  </entry>
  
