@@ -4,13 +4,37 @@
  <title>kumamidori blog</title>
  <link href="http://kumamidori.github.io/" rel="self"/>
  <link href="http://kumamidori.github.io"/>
- <updated>2014-09-06T16:19:36+09:00</updated>
+ <updated>2014-10-28T00:10:59+09:00</updated>
  <id>http://kumamidori.github.io</id>
  <author>
    <name>kuma_nana</name>
    <email>shigematsu.nana@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>発表スライドリンクなど</title>
+   <link href="http://kumamidori.github.io/diary/2014/10/27/dddosaka_lt_speaker"/>
+   <updated>2014-10-27T00:00:00Z</updated>
+   <id>http://kumamidori.github.io/diary/2014/10/27/dddosaka_lt_speaker</id>
+   <content type="html">
+&lt;p&gt;もう年末年始の帰省予定も決まったので、気分は年末です。&lt;/p&gt;
+
+&lt;p&gt;DDD読書会の記録をここに書いていなかったので書こうと。
+大苦手な発表を3回やりました。最初の発表は、「内容が無い、ダメだこれは・・・」と自分で思いながらだったけど、それが、大変貴重な良い学習機会、きっかけとなりました。後の2回の発表は、丁寧に調べながら書いた資料で、内容自体は気に入っています（肝心のしゃべりの方はいつも本当に本当にひどくてごめんなさい）。下にリンクを貼っておきます。&lt;/p&gt;
+
+&lt;p&gt;今後は自分のGithubの方に何か置いていけたら良いな、と思っているものの、土曜日はひたすら眠り続けていることが多くて、あんまりはかどっていません・・・。&lt;/p&gt;
+
+&lt;p&gt;来年もまた、設計の勉強会、読書会のようなものをやれたらと。企画も少し具体化しました。詳細が決まったら告知を出します。でも、DDDの時みたいに10人以上来るような形ではなくて、ごくこじんまりで、というイメージです。&lt;/p&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;発表資料リンク&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.slideshare.net/kumamidori/dddvol1-37609362&quot;&gt;8/3大阪DDD読書会ワークショップvol.1ガイダンス&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.slideshare.net/kumamidori/140921-dddosaka-lttalk&quot;&gt;9/21DSLを学ぶ - 設定式によるルールの表現を試す -&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>DDDに関する小さな短い雑談</title>
@@ -784,6 +808,11 @@ Aura だと、$di-&amp;gt;get()/ $di-&amp;gt;set() で、任意のキー名を�
   &lt;li&gt;&lt;a href=&quot;http://www.skc-higashiyodogawa.jp/html/chinshitu.html&quot;&gt;市民交流センターひがしよどがわ&lt;/a&gt;
     &lt;ul&gt;
       &lt;li&gt;Ruby関西で使ったことがあると聞いて。安くてプロジェクタもあるのが良い。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.creo-osaka.or.jp/north/&quot;&gt;クレオ大阪北　大阪市立男女共同参画センター&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;新大阪Ruby が使っていると聞いて。  &lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
