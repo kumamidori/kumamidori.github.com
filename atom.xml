@@ -4,13 +4,92 @@
  <title>kumamidori blog</title>
  <link href="http://kumamidori.github.io/" rel="self"/>
  <link href="http://kumamidori.github.io"/>
- <updated>2014-10-28T00:22:18+09:00</updated>
+ <updated>2014-11-25T01:07:12+09:00</updated>
  <id>http://kumamidori.github.io</id>
  <author>
    <name>kuma_nana</name>
    <email>shigematsu.nana@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>PHPUnit tests in Eclipse - MakeGood, Luna and Composer -</title>
+   <link href="http://kumamidori.github.io/php/2014/11/24/makegood_composer"/>
+   <updated>2014-11-24T00:00:00Z</updated>
+   <id>http://kumamidori.github.io/php/2014/11/24/makegood_composer</id>
+   <content type="html">
+&lt;h2 id=&quot;phpunit-tests-in-eclipse---makegood-luna-and-composer--&quot;&gt;PHPUnit tests in Eclipse - MakeGood, Luna and Composer -&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/piece/makegood&quot;&gt;MakeGood&lt;/a&gt; is a continuous test runner to run unit tests on Eclipse PDT.&lt;/p&gt;
+
+&lt;h3 id=&quot;environment&quot;&gt;Environment&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Mac 10.9 Maverics&lt;/li&gt;
+  &lt;li&gt;PHP : 5.6 (Liip binary), Xdebug enabled&lt;/li&gt;
+  &lt;li&gt;Eclipse for PHP Developers, Luna Service Release 1 (4.4.1)&lt;/li&gt;
+  &lt;li&gt;MakeGood&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;PHPUnit 4 via project’s composer (local install)&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;configure-eclipse&quot;&gt;Configure Eclipse&lt;/h3&gt;
+
+&lt;h4 id=&quot;makegood&quot;&gt;MakeGood&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;[General]&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;[Add] your [Test Folders].
+Set the [Preload Script:] to your bootstrap file.&lt;/p&gt;
+
+&lt;p&gt;Example:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/201411/1_properties_makegood_general.png&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;[PHPUnit]&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Set the path to the phpunit xml file under the PHPUnit tab.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/201411/2_properties_makegood_phpunit.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;php---build-path&quot;&gt;PHP - [Build Path]&lt;/h4&gt;
+
+&lt;p&gt;Your project path.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/201411/3_properties_buildpath.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;php---include-path&quot;&gt;PHP - [Include Path]&lt;/h4&gt;
+
+&lt;p&gt;Your project path.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/201411/4_properties_include_path.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;and-youre-done&quot;&gt;And you’re DONE!&lt;/h3&gt;
+
+&lt;p&gt;Everything should be ready now. 
+If you can’t see the MakeGood tab already, browse to Window &amp;gt; Show View &amp;gt; MakeGood.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/201411/5_makegood-show-view1.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/201411/6_makegood-show-view2.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;… and see the results …&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/201411/7_phpunit_results.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Happy TDD-ing♪&lt;/p&gt;
+
+&lt;h3 id=&quot;links&quot;&gt;Links&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/piece/makegood&quot;&gt;MakeGood (Github wiki)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.loftdigital.com/running-phpunit-tests-in-eclipse-pdt&quot;&gt;Running PHPUnit tests in Eclipse PDT - blog.loftdigital.com&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>発表スライドリンクなど</title>
