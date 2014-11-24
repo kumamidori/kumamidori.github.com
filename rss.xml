@@ -5,8 +5,8 @@
         <description>kumamidori blog - kuma_nana</description>
         <link>http://kumamidori.github.io</link>
         <link>http://kumamidori.github.io</link>
-        <lastBuildDate>2014-11-25T01:13:49+09:00</lastBuildDate>
-        <pubDate>2014-11-25T01:13:49+09:00</pubDate>
+        <lastBuildDate>2014-11-25T01:55:32+09:00</lastBuildDate>
+        <pubDate>2014-11-25T01:55:32+09:00</pubDate>
         <ttl>1800</ttl>
 
 
@@ -27,7 +27,7 @@
   &lt;li&gt;&lt;strong&gt;PHPUnit 4 via project’s composer (local install)&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;configure-eclipse&quot;&gt;Configure Eclipse&lt;/h3&gt;
+&lt;h3 id=&quot;configure-eclipse-project---properties&quot;&gt;Configure Eclipse (Project - [properties])&lt;/h3&gt;
 
 &lt;h4 id=&quot;makegood&quot;&gt;MakeGood&lt;/h4&gt;
 
