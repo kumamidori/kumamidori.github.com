@@ -22,8 +22,7 @@ tags:
 - MakeGood
 - **PHPUnit 4 via project's composer (local install)**
 
-### Configure Eclipse
-
+### Configure Eclipse (Project - [properties])
 
 #### MakeGood
 
