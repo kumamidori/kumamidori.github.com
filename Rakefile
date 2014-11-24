@@ -21,6 +21,7 @@ module JB
       :layouts => "_layouts",
       :themes => "_includes/themes",
       :theme_assets => "assets/themes",
+      :image_assets => "assets/images",
       :theme_packages => "_theme_packages",
       :posts => "_posts"
     }
@@ -64,8 +65,6 @@ task :deploy do
       exit -1
     end
   end
-  # convert
-  sh "ruby _scripts/convert_html_to_hatena.rb"
 end
 
 # Usage: rake post title="A Title" [date="2012-02-09"] [tags=[tag1,tag2]] [category="category"]
