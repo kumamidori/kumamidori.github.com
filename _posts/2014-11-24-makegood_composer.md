@@ -28,10 +28,15 @@ tags:
 
 - [General]
 
-[Add] your [Test Folders].
-Set the [Preload Script:] to your bootstrap file.
+[Add] your [Test Folders]. 
+Set the [Preload Script] to your bootstrap file.
 
 Example:
+
+```
+[Test Folders] your-project_path/src, 
+[Preload Script] bootstrap_test.php
+```
 
 <img src="/assets/images/201411/1_properties_makegood_general.png" />
 
@@ -46,12 +51,6 @@ Set the path to the phpunit xml file under the PHPUnit tab.
 Your project path.
 
 <img src="/assets/images/201411/3_properties_buildpath.png" />
-
-#### PHP - [Include Path]
-
-Your project path.
-
-<img src="/assets/images/201411/4_properties_include_path.png" />
 
 ### And you're DONE!
 
