@@ -5,8 +5,8 @@
         <description>kumamidori blog - kuma_nana</description>
         <link>http://kumamidori.github.io</link>
         <link>http://kumamidori.github.io</link>
-        <lastBuildDate>2014-11-25T02:06:55+09:00</lastBuildDate>
-        <pubDate>2014-11-25T02:06:55+09:00</pubDate>
+        <lastBuildDate>2014-11-26T00:23:09+09:00</lastBuildDate>
+        <pubDate>2014-11-26T00:23:09+09:00</pubDate>
         <ttl>1800</ttl>
 
 
@@ -35,10 +35,15 @@
   &lt;li&gt;[General]&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;[Add] your [Test Folders].
-Set the [Preload Script:] to your bootstrap file.&lt;/p&gt;
+&lt;p&gt;[Add] your [Test Folders]. 
+Set the [Preload Script] to your bootstrap file.&lt;/p&gt;
 
 &lt;p&gt;Example:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+[Test Folders] your-project_path/src, 
+[Preload Script] bootstrap_test.php
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/201411/1_properties_makegood_general.png&quot; /&gt;&lt;/p&gt;
 
@@ -55,12 +60,6 @@ Set the [Preload Script:] to your bootstrap file.&lt;/p&gt;
 &lt;p&gt;Your project path.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/201411/3_properties_buildpath.png&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;php---include-path&quot;&gt;PHP - [Include Path]&lt;/h4&gt;
-
-&lt;p&gt;Your project path.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/201411/4_properties_include_path.png&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;and-youre-done&quot;&gt;And you’re DONE!&lt;/h3&gt;
 
